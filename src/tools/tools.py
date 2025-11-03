@@ -18,6 +18,14 @@ from .tool_params import (
     ListIndicesArgs,
     SearchIndexArgs,
     baseToolArgs,
+    GetAgenticMemoryArgs,
+    CreateAgenticMemoryContainerArgs,
+    AddAgenticMemoriesArgs,
+    UpdateAgenticMemoryArgs,
+    SearchAgenticMemoryArgs,
+    DeleteAgenticMemoryByIDArgs,
+    DeleteAgenticMemoryByQueryArgs,
+    CreateAgenticMemorySessionArgs
 )
 from .utils import is_tool_compatible
 from opensearch.helper import (
@@ -37,6 +45,14 @@ from opensearch.helper import (
     get_shards,
     list_indices,
     search_index,
+    create_agentic_memory_container,
+    create_agentic_memory_session,
+    add_agentic_memories,
+    get_agentic_memory,
+    delete_agentic_memory_by_id,
+    delete_agentic_memory_by_query,
+    search_agentic_memory,
+    update_agentic_memory
 )
 
 
@@ -487,6 +503,79 @@ async def get_long_running_tasks_tool(args: GetLongRunningTasksArgs) -> list[dic
         ]
 
 
+async def create_agentic_memory_container_tool(args: CreateAgenticMemoryContainerArgs) -> list[dict]:
+    """
+    Creates a new memory container in OpenSearch.
+
+    Args:
+        args: Tool arguments
+
+    Returns:
+        List of response objects
+    """
+    try:
+        result = create_agentic_memory_container(args)
+        return [{'type': 'text', 'text': json.dumps(result)}]
+    except Exception as e:
+        return [{'type': 'text', 'text': f'Error: {str(e)}'}]
+
+
+async def create_agentic_memory_session_tool(args: CreateAgenticMemorySessionArgs) -> list[dict]:
+    try:
+        result = create_agentic_memory_session(args)
+        return [{'type': 'text', 'text': json.dumps(result)}]
+    except Exception as e:
+        return [{'type': 'text', 'text': f'Error: {str(e)}'}]
+
+
+async def add_agentic_memories_tool(args: AddAgenticMemoriesArgs) -> list[dict]:
+    try:
+        result = add_agentic_memories(args)
+        return [{'type': 'text', 'text': json.dumps(result)}]
+    except Exception as e:
+        return [{'type': 'text', 'text': f'Error: {str(e)}'}]
+
+
+async def get_agentic_memory_tool(args: GetAgenticMemoryArgs) -> list[dict]:
+    try:
+        result = get_agentic_memory(args)
+        return [{'type': 'text', 'text': json.dumps(result)}]
+    except Exception as e:
+        return [{'type': 'text', 'text': f'Error: {str(e)}'}]
+
+
+async def update_agentic_memory_tool(args: UpdateAgenticMemoryArgs) -> list[dict]:
+    try:
+        result = update_agentic_memory(args)
+        return [{'type': 'text', 'text': json.dumps(result)}]
+    except Exception as e:
+        return [{'type': 'text', 'text': f'Error: {str(e)}'}]
+
+
+async def delete_agentic_memoryby_ID_tool(args: DeleteAgenticMemoryByIDArgs) -> list[dict]:
+    try:
+        result = delete_agentic_memory_by_id(args)
+        return [{'type': 'text', 'text': json.dumps(result)}]
+    except Exception as e:
+        return [{'type': 'text', 'text': f'Error: {str(e)}'}]
+
+
+async def delete_agentic_memory_by_query_tool(args: DeleteAgenticMemoryByQueryArgs) -> list[dict]:
+    try:
+        result = delete_agentic_memory_by_query(args)
+        return [{'type': 'text', 'text': json.dumps(result)}]
+    except Exception as e:
+        return [{'type': 'text', 'text': f'Error: {str(e)}'}]
+
+
+async def search_agentic_memory_tool(args: SearchAgenticMemoryArgs) -> list[dict]:
+    try:
+        result = search_agentic_memory(args)
+        return [{'type': 'text', 'text': json.dumps(result)}]
+    except Exception as e:
+        return [{'type': 'text', 'text': f'Error: {str(e)}'}]
+
+
 from .generic_api_tool import GenericOpenSearchApiArgs, generic_opensearch_api_tool
 
 
@@ -624,4 +713,76 @@ TOOL_REGISTRY = {
         'min_version': '1.0.0',
         'http_methods': 'GET, POST, PUT, DELETE, HEAD, PATCH',
     },
+    'CreateAgenticMemoryContainerTool': {
+        'display_name': 'CreateAgenticMemoryContainerTool',
+        'description': 'Create a memory container to store agentic memories.',
+        'input_schema': CreateAgenticMemoryContainerArgs.model_json_schema(),
+        'function': create_agentic_memory_container_tool,
+        'args_model': CreateAgenticMemoryContainerArgs,
+        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'http_methods': 'POST',
+    },
+    'CreateAgenticMemorySessionTool': {
+        'display_name': 'CreateAgenticMemorySessionTool',
+        'description': 'Create a new session in a memory container.',
+        'input_schema': CreateAgenticMemorySessionArgs.model_json_schema(),
+        'function': create_agentic_memory_session,
+        'args_model': CreateAgenticMemorySessionArgs,
+        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'http_methods': 'UPDATE',
+    },
+    'AddAgenticMemoriesTool': {
+        'display_name': 'AddAgenticMemoriesTool',
+        'description': 'Add an agentic memory to a memory container.',
+        'input_schema': AddAgenticMemoriesArgs.model_json_schema(),
+        'function': add_agentic_memories_tool,
+        'args_model': AddAgenticMemoriesArgs,
+        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'http_methods': 'UPDATE',
+    },
+    'GetAgenticMemoryTool': {
+        'display_name': 'GetAgenticMemoryTool',
+        'description': 'Retrieve a specific memory by its type and ID.',
+        'input_schema': GetAgenticMemoryArgs.model_json_schema(),
+        'function': get_agentic_memory_tool,
+        'args_model': GetAgenticMemoryArgs,
+        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'http_methods': 'GET',
+    },
+    'UpdateAgenticMemoryArgsTool': {
+        'display_name': 'UpdateAgenticMemoryArgsTool',
+        'description': 'Update a specific memory by its type and ID.',
+        'input_schema': UpdateAgenticMemoryArgs.model_json_schema(),
+        'function': update_agentic_memory_tool,
+        'args_model': UpdateAgenticMemoryArgs,
+        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'http_methods': 'UPDATE',
+    },
+    'DeleteAgenticMemoryByIDTool': {
+        'display_name': 'DeleteAgenticMemoryByIDTool',
+        'description': 'Deletes specific agentic memory container by its type and ID.',
+        'input_schema': DeleteAgenticMemoryByIDArgs.model_json_schema(),
+        'function': delete_agentic_memoryby_ID_tool,
+        'args_model': DeleteAgenticMemoryByIDArgs,
+        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'http_methods': 'UPDATE',
+    },
+    'DeleteAgenticMemoryByQueryTool': {
+        'display_name': 'DeleteAgenticMemoryByQueryTool',
+        'description': 'Deletes specific agentic memory by query.',
+        'input_schema': DeleteAgenticMemoryByQueryArgs.model_json_schema(),
+        'function': delete_agentic_memory_by_query_tool,
+        'args_model': DeleteAgenticMemoryByQueryArgs,
+        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'http_methods': 'UPDATE',
+    },
+    'SearchAgenticMemoryTool': {
+        'display_name': 'SearchAgenticMemoryTool',
+        'description': 'Search for memories of a specific type within a memory container.',
+        'input_schema': SearchAgenticMemoryArgs.model_json_schema(),
+        'function': search_agentic_memory_tool,
+        'args_model': SearchAgenticMemoryArgs,
+        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'http_methods': 'UPDATE',
+    }
 }

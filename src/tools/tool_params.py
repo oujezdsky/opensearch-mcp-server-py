@@ -280,7 +280,7 @@ class PayloadType(str, Enum):
 
 
 class IndexSettingsArgs(baseToolArgs):
-    """Index settings for memory storage indexes."""
+    """Index settings for agentic memory storage indexes."""
     
     session_index: Optional[Dict[str, Any]] = Field(
         default=None,
@@ -301,7 +301,7 @@ class IndexSettingsArgs(baseToolArgs):
 
 
 class StrategyConfigurationArgs(baseToolArgs):
-    """Strategy-specific configuration."""
+    """Strategy-specific agentic memory configuration."""
     
     llm_result_path: Optional[str] = Field(
         default=None,
@@ -318,7 +318,7 @@ class StrategyConfigurationArgs(baseToolArgs):
 
 
 class StrategyArgs(baseToolArgs):
-    """Memory processing strategy."""
+    """Agentic memory processing strategy."""
     
     strategy_type: StrategyType = Field(
         ...,
@@ -339,7 +339,7 @@ class StrategyArgs(baseToolArgs):
 
 
 class ParametersArgs(baseToolArgs):
-    """Global parameters for the memory container."""
+    """Global parameters for the agentic memory container."""
     
     llm_result_path: Optional[str] = Field(
         default=None,
@@ -347,8 +347,8 @@ class ParametersArgs(baseToolArgs):
     )
 
 
-class ConfigurationArgs(baseToolArgs):
-    """Memory container configuration."""
+class AgenticMemoryConfigurationArgs(baseToolArgs):
+    """Agentic memory container configuration."""
     
     embedding_model_type: Optional[EmbeddingModelType] = Field(
         default=None,
@@ -400,15 +400,15 @@ class ConfigurationArgs(baseToolArgs):
     )
     
     @model_validator(mode='after')
-    def validate_embedding_configuration(self) -> 'ConfigurationArgs':
+    def validate_embedding_configuration(self) -> 'AgenticMemoryConfigurationArgs':
         """Validate embedding model configuration."""
         if self.embedding_model_type == 'TEXT_EMBEDDING' and self.embedding_dimension is None:
             raise ValueError('embedding_dimension is required when embedding_model_type is TEXT_EMBEDDING')
         return self
 
 
-class CreateMemoryContainerArgs(baseToolArgs):
-    """Arguments for creating a memory container to store agentic memories."""
+class CreateAgenticMemoryContainerArgs(baseToolArgs):
+    """Arguments for creating a agentic memory container to store agentic memories."""
     
     name: str = Field(
         ...,
@@ -418,7 +418,7 @@ class CreateMemoryContainerArgs(baseToolArgs):
         default=None,
         description='The description of the memory container.'
     )
-    configuration: ConfigurationArgs = Field(
+    configuration: AgenticMemoryConfigurationArgs = Field(
         ...,
         description='The memory container configuration.'
     )
@@ -511,52 +511,8 @@ class CreateMemoryContainerArgs(baseToolArgs):
             ]
         }
 
-
-class GetMemoryArgs(baseToolArgs):
-    """Arguments for retrieving a specific memory by its type and ID."""
-    
-    memory_container_id: str = Field(
-        ...,
-        description='The ID of the memory container from which to retrieve the memory.'
-    )
-    memory_type: MemoryType = Field(
-        ...,
-        alias='type',
-        description='The memory type. Valid values are sessions, working, long-term, and history.'
-    )
-    id: str = Field(
-        ...,
-        description='The ID of the memory to retrieve.'
-    )
-    
-    class Config:
-        json_schema_extra = {
-            "examples": [
-                {
-                    "memory_container_id": "HudqiJkB1SltqOcZusVU",
-                    "type": "working",
-                    "id": "XyEuiJkBeh2gPPwzjYWM"
-                },
-                {
-                    "memory_container_id": "HudqiJkB1SltqOcZusVU",
-                    "type": "long-term", 
-                    "id": "DcxjTpkBvwXRq366C1Zz"
-                },
-                {
-                    "memory_container_id": "HudqiJkB1SltqOcZusVU",
-                    "type": "sessions",
-                    "id": "CcxjTpkBvwXRq366A1aE"
-                },
-                {
-                    "memory_container_id": "HudqiJkB1SltqOcZusVU",
-                    "type": "history",
-                    "id": "eMxnTpkBvwXRq366hmAU"
-                }
-            ]
-        }
-
-class CreateSessionArgs(baseToolArgs):
-    """Arguments for creating a new session in a memory container."""
+class CreateAgenticMemorySessionArgs(baseToolArgs):
+    """Arguments for creating a new session in a agentic memory container."""
     
     memory_container_id: str = Field(
         ...,
@@ -615,9 +571,51 @@ class CreateSessionArgs(baseToolArgs):
             ]
         }
 
+class GetAgenticMemoryArgs(baseToolArgs):
+    """Arguments for retrieving a specific agentic memory by its type and ID."""
+    
+    memory_container_id: str = Field(
+        ...,
+        description='The ID of the memory container from which to retrieve the memory.'
+    )
+    memory_type: MemoryType = Field(
+        ...,
+        alias='type',
+        description='The memory type. Valid values are sessions, working, long-term, and history.'
+    )
+    id: str = Field(
+        ...,
+        description='The ID of the memory to retrieve.'
+    )
+    
+    class Config:
+        json_schema_extra = {
+            "examples": [
+                {
+                    "memory_container_id": "HudqiJkB1SltqOcZusVU",
+                    "type": "working",
+                    "id": "XyEuiJkBeh2gPPwzjYWM"
+                },
+                {
+                    "memory_container_id": "HudqiJkB1SltqOcZusVU",
+                    "type": "long-term", 
+                    "id": "DcxjTpkBvwXRq366C1Zz"
+                },
+                {
+                    "memory_container_id": "HudqiJkB1SltqOcZusVU",
+                    "type": "sessions",
+                    "id": "CcxjTpkBvwXRq366A1aE"
+                },
+                {
+                    "memory_container_id": "HudqiJkB1SltqOcZusVU",
+                    "type": "history",
+                    "id": "eMxnTpkBvwXRq366hmAU"
+                }
+            ]
+        }
 
-class AddMemoriesArgs(baseToolArgs):
-    """Arguments for adding memories to a memory container."""
+class AddAgenticMemoriesArgs(baseToolArgs):
+    """Arguments for adding memories to the agentic memory container."""
     
     memory_container_id: str = Field(
         ...,
@@ -657,7 +655,7 @@ class AddMemoriesArgs(baseToolArgs):
     )
     
     @model_validator(mode='after')
-    def validate_payload_requirements(self) -> 'AddMemoriesArgs':
+    def validate_payload_requirements(self) -> 'AddAgenticMemoriesArgs':
         """Validate that the correct fields are provided based on payload_type."""
         errors = []
         
@@ -684,7 +682,7 @@ class AddMemoriesArgs(baseToolArgs):
         return self
     
     @model_validator(mode='after')
-    def validate_messages_structure(self) -> 'AddMemoriesArgs':
+    def validate_messages_structure(self) -> 'AddAgenticMemoriesArgs':
         """Validate the structure of messages if provided."""
         if self.messages:
             for i, message in enumerate(self.messages):
@@ -774,8 +772,8 @@ class AddMemoriesArgs(baseToolArgs):
         }
 
 
-class SearchMemoryArgs(baseToolArgs):
-    """Arguments for searching memories of a specific type within a memory container."""
+class SearchAgenticMemoryArgs(baseToolArgs):
+    """Arguments for searching memories of a specific type within a agentic memory container."""
     
     memory_container_id: str = Field(
         ...,
@@ -897,8 +895,9 @@ class SearchMemoryArgs(baseToolArgs):
             ]
         }
 
-class DeleteMemoryArgs(baseToolArgs):
-    """Arguments for deleting a specific memory by its type and ID."""
+
+class DeleteAgenticMemoryByIDArgs(baseToolArgs):
+    """Arguments for deleting a specific agentic memory by its type and ID."""
     
     memory_container_id: str = Field(
         ...,
@@ -941,8 +940,8 @@ class DeleteMemoryArgs(baseToolArgs):
         }
 
 
-class DeleteMemoryByQueryArgs(baseToolArgs):
-    """Arguments for deleting memories by query."""
+class DeleteAgenticMemoryByQueryArgs(baseToolArgs):
+    """Arguments for deleting agentic memories by query."""
     
     memory_container_id: str = Field(
         ...,
@@ -994,8 +993,8 @@ class DeleteMemoryByQueryArgs(baseToolArgs):
         }
 
 
-class UpdateMemoryArgs(baseToolArgs):
-    """Arguments for updating a specific memory by its type and ID."""
+class UpdateAgenticMemoryArgs(baseToolArgs):
+    """Arguments for updating a specific agentic memory by its type and ID."""
     
     memory_container_id: str = Field(
         ...,
@@ -1051,7 +1050,7 @@ class UpdateMemoryArgs(baseToolArgs):
     )
     
     @model_validator(mode='after')
-    def validate_memory_type_fields(self) -> 'UpdateMemoryArgs':
+    def validate_memory_type_fields(self) -> 'UpdateAgenticMemoryArgs':
         """Validate that only appropriate fields are used for each memory type."""
         errors = []
         
@@ -1092,7 +1091,7 @@ class UpdateMemoryArgs(baseToolArgs):
         return self
     
     @model_validator(mode='after') 
-    def validate_working_memory_content(self) -> 'UpdateMemoryArgs':
+    def validate_working_memory_content(self) -> 'UpdateAgenticMemoryArgs':
         """Validate working memory content structure."""
         if self.memory_type == 'working' and self.messages:
             for i, message in enumerate(self.messages):

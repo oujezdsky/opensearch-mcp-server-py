@@ -292,3 +292,250 @@ async def get_opensearch_version(args: baseToolArgs) -> Version:
     except Exception as e:
         logger.error(f'Error getting OpenSearch version: {e}')
         return None
+
+
+def create_agentic_memory_container(args: CreateAgenticMemoryContainerArgs) -> json:
+    """Create a new memory container for storing agentic memories.
+    
+    Args:
+        args: CreateAgenticMemoryContainerArgs containing name, optional description, and configuration
+        
+    Returns:
+        json: Response from the create memory container endpoint, likely including the created container details
+    """
+    from .client import initialize_client
+    
+    client = initialize_client(args)
+    
+    url = '/_plugins/_ml/memory_containers/_create'
+    
+
+    body = args.model_dump(exclude_none=True)
+    
+    response = client.transport.perform_request(
+        method='POST',
+        url=url,
+        body=body
+    )
+    
+    return response
+
+
+def get_agentic_memory(args: GetAgenticMemoryArgs) -> json:
+    """Retrieve a specific agentic memory by its type and ID from the memory container.
+    
+    Args:
+        args: GetAgenticMemoryArgs containing memory_container_id, memory_type, and id
+        
+    Returns:
+        json: The retrieved memory information from the /_memory endpoint
+    """
+    from .client import initialize_client
+    
+    client = initialize_client(args)
+    
+    url_parts = [
+        '/_plugins/_ml/memory_containers',
+        args.memory_container_id,
+        'memories',
+        args.memory_type,
+        args.id
+    ]
+    url = '/'.join(url_parts)
+    
+    response = client.transport.perform_request(
+        method='GET',
+        url=url
+    )
+    
+    return response
+
+
+def create_agentic_memory_session(args: CreateAgenticMemorySessionArgs) -> json:
+    """Create a new agentic memory session in the specified memory container.
+    
+    Args:
+        args: CreateSessionArgs containing memory_container_id and optional session_id, summary, metadata, namespace
+        
+    Returns:
+        json: Response from the session creation endpoint
+    """
+    from .client import initialize_client
+    
+    client = initialize_client(args)
+    
+    url_parts = [
+        '/_plugins/_ml/memory_containers',
+        args.memory_container_id,
+        'memories/sessions',
+    ]
+    url = '/'.join(url_parts)
+
+    body = args.model_dump(exclude={'memory_container_id'}, exclude_none=True)
+    
+    response = client.transport.perform_request(
+        method='POST',
+        url=url,
+        body=body if body else None
+    )
+    
+    return response
+
+
+def add_agentic_memories(args: AddAgenticMemoriesArgs) -> json:
+    """Add agentic memories to the specified memory container based on the payload type.
+    
+    Args:
+        args: AddAgenticMemoriesArgs containing memory_container_id, payload_type, and content fields like messages or structured_data, plus optional namespace, metadata, tags, infer
+        
+    Returns:
+        json: Response from the add memories endpoint
+    """
+    from .client import initialize_client
+    
+    client = initialize_client(args)
+    
+    url_parts = [
+        '/_plugins/_ml/memory_containers',
+        args.memory_container_id,
+        'memories',
+    ]
+    url = '/'.join(url_parts)
+    
+    body = args.model_dump(exclude={'memory_container_id'}, exclude_none=True)
+    
+    response = client.transport.perform_request(
+        method='POST',
+        url=url,
+        body=body
+    )
+    
+    return response
+
+def update_agentic_memory(args: UpdateAgenticMemoryArgs) -> json:
+    """Update a specific agentic memory by its type and ID in the memory container.
+    
+    Args:
+        args: UpdateAgenticMemoryArgs containing memory_container_id, memory_type, id, and optional update fields based on type
+        
+    Returns:
+        json: Response from the update memory endpoint
+    """
+    from .client import initialize_client
+    
+    client = initialize_client(args)
+    
+    url_parts = [
+        '/_plugins/_ml/memory_containers',
+        args.memory_container_id,
+        'memories',
+        args.memory_type,
+        args.id
+    ]
+    url = '/'.join(url_parts)
+    
+    body = args.model_dump(exclude={'memory_container_id', 'memory_type', 'id'}, exclude_none=True)
+    
+    response = client.transport.perform_request(
+        method='PUT',
+        url=url,
+        body=body if body else None
+    )
+    
+    return response
+
+
+def delete_agentic_memory_by_id(args: DeleteAgenticMemoryByIDArgs) -> json:
+    """Delete a specific agentic memory by its type and ID from the memory container.
+    
+    Args:
+        args: DeleteAgenticMemoryByIDArgs containing memory_container_id, memory_type, and id
+        
+    Returns:
+        json: Response from the delete memory endpoint
+    """
+    from .client import initialize_client
+    
+    client = initialize_client(args)
+    
+    url_parts = [
+        '/_plugins/_ml/memory_containers',
+        args.memory_container_id,
+        'memories',
+        args.memory_type,
+        args.id
+    ]
+    url = '/'.join(url_parts)
+    
+    response = client.transport.perform_request(
+        method='DELETE',
+        url=url
+    )
+    
+    return response
+
+
+def delete_agentic_memory_by_query(args: DeleteAgenticMemoryByQueryArgs) -> json:
+    """Delete agentic memories matching the provided query from the specified memory type in the container.
+    
+    Args:
+        args: DeleteAgenticMemoryByQueryArgs containing memory_container_id, memory_type, and query
+        
+    Returns:
+        json: Response from the delete memory by query endpoint
+    """
+    from .client import initialize_client
+    
+    client = initialize_client(args)
+    
+    url_parts = [
+        '/_plugins/_ml/memory_containers',
+        args.memory_container_id,
+        'memories',
+        args.memory_type,
+        '_delete_by_query'
+    ]
+    url = '/'.join(url_parts)
+    
+    body = args.model_dump(exclude={'memory_container_id', 'memory_type'}, exclude_none=True)
+    
+    response = client.transport.perform_request(
+        method='POST',
+        url=url,
+        body=body
+    )
+    
+    return response
+
+
+def search_agentic_memory(args: SearchAgenticMemoryArgs) -> json:
+    """Search for agentic memories of a specific type within the memory container using OpenSearch query DSL.
+    
+    Args:
+        args: SearchAgenticMemoryArgs containing memory_container_id, memory_type, query, and optional sort
+        
+    Returns:
+        json: Search memories results
+    """
+    from .client import initialize_client
+    
+    client = initialize_client(args)
+    
+    url_parts = [
+        '/_plugins/_ml/memory_containers',
+        args.memory_container_id,
+        'memories',
+        args.memory_type,
+        '_search'
+    ]
+    url = '/'.join(url_parts)
+    
+    body = args.model_dump(exclude={'memory_container_id', 'memory_type'}, exclude_none=True)
+    
+    response = client.transport.perform_request(
+        method='POST',
+        url=url,
+        body=body
+    )
+    
+    return response
