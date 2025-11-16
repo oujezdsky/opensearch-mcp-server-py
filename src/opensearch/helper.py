@@ -3,6 +3,7 @@
 
 import json
 import logging
+from urllib.parse import quote
 from semver import Version
 from tools.tool_params import *
 
@@ -336,10 +337,10 @@ def get_agentic_memory(args: GetAgenticMemoryArgs) -> json:
     
     url_parts = [
         '/_plugins/_ml/memory_containers',
-        args.memory_container_id,
+        quote(args.memory_container_id, safe=''),
         'memories',
-        args.memory_type,
-        args.id
+        quote(args.memory_type, safe=''),
+        quote(args.id, safe='')
     ]
     url = '/'.join(url_parts)
     
@@ -366,7 +367,7 @@ def create_agentic_memory_session(args: CreateAgenticMemorySessionArgs) -> json:
     
     url_parts = [
         '/_plugins/_ml/memory_containers',
-        args.memory_container_id,
+        quote(args.memory_container_id, safe=''),
         'memories/sessions',
     ]
     url = '/'.join(url_parts)
@@ -397,7 +398,7 @@ def add_agentic_memories(args: AddAgenticMemoriesArgs) -> json:
     
     url_parts = [
         '/_plugins/_ml/memory_containers',
-        args.memory_container_id,
+        quote(args.memory_container_id, safe=''),
         'memories',
     ]
     url = '/'.join(url_parts)
@@ -427,10 +428,10 @@ def update_agentic_memory(args: UpdateAgenticMemoryArgs) -> json:
     
     url_parts = [
         '/_plugins/_ml/memory_containers',
-        args.memory_container_id,
+        quote(args.memory_container_id, safe=''),
         'memories',
-        args.memory_type,
-        args.id
+        quote(args.memory_type, safe=''),
+        quote(args.id, safe='')
     ]
     url = '/'.join(url_parts)
     
@@ -460,10 +461,10 @@ def delete_agentic_memory_by_id(args: DeleteAgenticMemoryByIDArgs) -> json:
     
     url_parts = [
         '/_plugins/_ml/memory_containers',
-        args.memory_container_id,
+        quote(args.memory_container_id, safe=''),
         'memories',
-        args.memory_type,
-        args.id
+        quote(args.memory_type, safe=''),
+        quote(args.id, safe='')
     ]
     url = '/'.join(url_parts)
     
@@ -490,9 +491,9 @@ def delete_agentic_memory_by_query(args: DeleteAgenticMemoryByQueryArgs) -> json
     
     url_parts = [
         '/_plugins/_ml/memory_containers',
-        args.memory_container_id,
+        quote(args.memory_container_id, safe=''),
         'memories',
-        args.memory_type,
+        quote(args.memory_type, safe=''),
         '_delete_by_query'
     ]
     url = '/'.join(url_parts)
@@ -523,9 +524,9 @@ def search_agentic_memory(args: SearchAgenticMemoryArgs) -> json:
     
     url_parts = [
         '/_plugins/_ml/memory_containers',
-        args.memory_container_id,
+        quote(args.memory_container_id, safe=''),
         'memories',
-        args.memory_type,
+        quote(args.memory_type, safe=''),
         '_search'
     ]
     url = '/'.join(url_parts)
