@@ -295,7 +295,7 @@ async def get_opensearch_version(args: baseToolArgs) -> Version:
         return None
 
 
-def create_agentic_memory_container(args: CreateAgenticMemoryContainerArgs) -> json:
+def create_agentic_memory_container(args: CreateAgenticMemoryContainerArgs) -> Dict[str, Any]:
     """Create a new memory container for storing agentic memories.
     
     Args:
@@ -322,7 +322,7 @@ def create_agentic_memory_container(args: CreateAgenticMemoryContainerArgs) -> j
     return response
 
 
-def get_agentic_memory(args: GetAgenticMemoryArgs) -> json:
+def get_agentic_memory(args: GetAgenticMemoryArgs) -> Dict[str, Any]:
     """Retrieve a specific agentic memory by its type and ID from the memory container.
     
     Args:
@@ -352,7 +352,7 @@ def get_agentic_memory(args: GetAgenticMemoryArgs) -> json:
     return response
 
 
-def create_agentic_memory_session(args: CreateAgenticMemorySessionArgs) -> json:
+def create_agentic_memory_session(args: CreateAgenticMemorySessionArgs) -> Dict[str, Any]:
     """Create a new agentic memory session in the specified memory container.
     
     Args:
@@ -383,7 +383,7 @@ def create_agentic_memory_session(args: CreateAgenticMemorySessionArgs) -> json:
     return response
 
 
-def add_agentic_memories(args: AddAgenticMemoriesArgs) -> json:
+def add_agentic_memories(args: AddAgenticMemoriesArgs) -> Dict[str, Any]:
     """Add agentic memories to the specified memory container based on the payload type.
     
     Args:
@@ -413,7 +413,7 @@ def add_agentic_memories(args: AddAgenticMemoriesArgs) -> json:
     
     return response
 
-def update_agentic_memory(args: UpdateAgenticMemoryArgs) -> json:
+def update_agentic_memory(args: UpdateAgenticMemoryArgs) -> Dict[str, Any]:
     """Update a specific agentic memory by its type and ID in the memory container.
     
     Args:
@@ -446,7 +446,7 @@ def update_agentic_memory(args: UpdateAgenticMemoryArgs) -> json:
     return response
 
 
-def delete_agentic_memory_by_id(args: DeleteAgenticMemoryByIDArgs) -> json:
+def delete_agentic_memory_by_id(args: DeleteAgenticMemoryByIDArgs) -> Dict[str, Any]:
     """Delete a specific agentic memory by its type and ID from the memory container.
     
     Args:
@@ -476,7 +476,7 @@ def delete_agentic_memory_by_id(args: DeleteAgenticMemoryByIDArgs) -> json:
     return response
 
 
-def delete_agentic_memory_by_query(args: DeleteAgenticMemoryByQueryArgs) -> json:
+def delete_agentic_memory_by_query(args: DeleteAgenticMemoryByQueryArgs) -> Dict[str, Any]:
     """Delete agentic memories matching the provided query from the specified memory type in the container.
     
     Args:
@@ -509,7 +509,7 @@ def delete_agentic_memory_by_query(args: DeleteAgenticMemoryByQueryArgs) -> json
     return response
 
 
-def search_agentic_memory(args: SearchAgenticMemoryArgs) -> json:
+def search_agentic_memory(args: SearchAgenticMemoryArgs) -> Dict[str, Any]:
     """Search for agentic memories of a specific type within the memory container using OpenSearch query DSL.
     
     Args:
