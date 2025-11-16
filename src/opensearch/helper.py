@@ -534,7 +534,7 @@ def search_agentic_memory(args: SearchAgenticMemoryArgs) -> Dict[str, Any]:
     body = args.model_dump(exclude={'memory_container_id', 'memory_type'}, exclude_none=True)
     
     response = client.transport.perform_request(
-        method='POST',
+        method='GET',
         url=url,
         body=body
     )
