@@ -6,6 +6,7 @@ import logging
 from urllib.parse import quote
 from semver import Version
 from tools.tool_params import *
+from tools.utils import helper_error
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -313,12 +314,15 @@ def create_agentic_memory_container(args: CreateAgenticMemoryContainerArgs) -> D
 
     body = args.model_dump(exclude_none=True)
     
-    response = client.transport.perform_request(
-        method='POST',
-        url=url,
-        body=body
-    )
-    
+    try:
+        response = client.transport.perform_request(
+            method='POST',
+            url=url,
+            body=body
+        )
+    except Exception as e:
+        raise helper_error("create agentic memory container", e)
+
     return response
 
 
@@ -344,11 +348,14 @@ def get_agentic_memory(args: GetAgenticMemoryArgs) -> Dict[str, Any]:
     ]
     url = '/'.join(url_parts)
     
-    response = client.transport.perform_request(
-        method='GET',
-        url=url
-    )
-    
+    try:
+        response = client.transport.perform_request(
+            method='GET',
+            url=url
+        )
+    except Exception as e:
+        raise helper_error("get agentic memory", e)
+
     return response
 
 
@@ -374,12 +381,15 @@ def create_agentic_memory_session(args: CreateAgenticMemorySessionArgs) -> Dict[
 
     body = args.model_dump(exclude={'memory_container_id'}, exclude_none=True)
     
-    response = client.transport.perform_request(
-        method='POST',
-        url=url,
-        body=body if body else None
-    )
-    
+    try:
+        response = client.transport.perform_request(
+            method='POST',
+            url=url,
+            body=body if body else None
+        )
+    except Exception as e:
+        raise helper_error("create agentic memory session", e)
+
     return response
 
 
@@ -405,12 +415,15 @@ def add_agentic_memories(args: AddAgenticMemoriesArgs) -> Dict[str, Any]:
     
     body = args.model_dump(exclude={'memory_container_id'}, exclude_none=True)
     
-    response = client.transport.perform_request(
-        method='POST',
-        url=url,
-        body=body
-    )
-    
+    try:
+        response = client.transport.perform_request(
+            method='POST',
+            url=url,
+            body=body
+        )
+    except Exception as e:
+        raise helper_error("add agentic memories", e)
+
     return response
 
 def update_agentic_memory(args: UpdateAgenticMemoryArgs) -> Dict[str, Any]:
@@ -437,12 +450,15 @@ def update_agentic_memory(args: UpdateAgenticMemoryArgs) -> Dict[str, Any]:
     
     body = args.model_dump(exclude={'memory_container_id', 'memory_type', 'id'}, exclude_none=True)
     
-    response = client.transport.perform_request(
-        method='PUT',
-        url=url,
-        body=body if body else None
-    )
-    
+    try:
+        response = client.transport.perform_request(
+            method='PUT',
+            url=url,
+            body=body if body else None
+        )
+    except Exception as e:
+        raise helper_error("update agentic memory", e)
+
     return response
 
 
@@ -468,11 +484,14 @@ def delete_agentic_memory_by_id(args: DeleteAgenticMemoryByIDArgs) -> Dict[str, 
     ]
     url = '/'.join(url_parts)
     
-    response = client.transport.perform_request(
-        method='DELETE',
-        url=url
-    )
-    
+    try:
+        response = client.transport.perform_request(
+            method='DELETE',
+            url=url
+        )
+    except Exception as e:
+        raise helper_error("delete agentic memory by ID", e)
+
     return response
 
 
@@ -500,12 +519,15 @@ def delete_agentic_memory_by_query(args: DeleteAgenticMemoryByQueryArgs) -> Dict
     
     body = args.model_dump(exclude={'memory_container_id', 'memory_type'}, exclude_none=True)
     
-    response = client.transport.perform_request(
-        method='POST',
-        url=url,
-        body=body
-    )
-    
+    try:
+        response = client.transport.perform_request(
+            method='POST',
+            url=url,
+            body=body
+        )
+    except Exception as e:
+        raise helper_error("delete agentic memory by query", e)
+  
     return response
 
 
@@ -533,10 +555,13 @@ def search_agentic_memory(args: SearchAgenticMemoryArgs) -> Dict[str, Any]:
     
     body = args.model_dump(exclude={'memory_container_id', 'memory_type'}, exclude_none=True)
     
-    response = client.transport.perform_request(
-        method='GET',
-        url=url,
-        body=body
-    )
-    
+    try:
+        response = client.transport.perform_request(
+            method='GET',
+            url=url,
+            body=body
+        )
+    except Exception as e:
+        raise helper_error("search agentic memory", e)
+
     return response
