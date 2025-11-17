@@ -3,10 +3,11 @@
 
 import json
 import logging
-from urllib.parse import quote
 from semver import Version
 from tools.tool_params import *
 from tools.utils import helper_error
+from urllib.parse import quote
+
 
 # Configure logging
 logger = logging.getLogger(__name__)

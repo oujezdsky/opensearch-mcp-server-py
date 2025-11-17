@@ -1,11 +1,11 @@
 # Copyright OpenSearch Contributors
 # SPDX-License-Identifier: Apache-2.0
 
-from pydantic import BaseModel, Field, model_validator
-from typing import Any, Optional, Type, TypeVar, Dict, Literal, List, Set
-from mcp_server_opensearch.global_state import get_mode
-from pydantic_core import PydanticCustomError
 from enum import Enum
+from mcp_server_opensearch.global_state import get_mode
+from pydantic import BaseModel, Field, model_validator
+from pydantic_core import PydanticCustomError
+from typing import Any, Dict, List, Literal, Optional, Set, Type, TypeVar
 
 
 T = TypeVar('T', bound=BaseModel)
@@ -259,17 +259,20 @@ class GetNodesArgs(baseToolArgs):
 
 # --- Agentic Memory ---
 class EmbeddingModelType(str, Enum):
+    """Specifies the type of embedding model used."""
     text_embedding = 'TEXT_EMBEDDING'
     sparse_encoding = 'SPARSE_ENCODING'
 
 
 class StrategyType(str, Enum):
+    """Specifies the type of agentic memory processing strategy."""
     semantic = 'SEMANTIC'
     user_preference = 'USER_PREFERENCE'
     summary = 'SUMMARY'
 
 
 class MemoryType(str, Enum):
+    """Specifies the different types of agentic memory."""
     sessions = 'sessions'
     working = 'working'
     long_term = 'long-term'
@@ -277,6 +280,7 @@ class MemoryType(str, Enum):
 
 
 class PayloadType(str, Enum):
+    """Specifies the type of payload being added to agentic memory."""
     conversational = 'conversational'
     data = 'data'
 
@@ -292,8 +296,7 @@ ERR_EMBEDDING_DIMENSION_REQUIRED = 'embedding_dimension_required'
 
 
 class MessageContentItem(BaseModel):
-    """
-    Schema for the content part of a message.
+    """Schema for the content part of a message.
     Used for strong typing in 'messages' fields.
     """
 
@@ -304,8 +307,7 @@ class MessageContentItem(BaseModel):
 
 
 class MessageItem(BaseModel):
-    """
-    Schema for a single message in 'messages' field.
+    """Schema for a single message in 'messages' field.
     Used for strong typing.
     """
 
@@ -318,9 +320,7 @@ class MessageItem(BaseModel):
 
 
 class BaseAgenticMemoryContainerArgs(baseToolArgs):
-    """
-    Base arguments for tools operating on an existing Agentic Memory Container.
-    """
+    """Base arguments for tools operating on an existing Agentic Memory Container."""
 
     memory_container_id: str = Field(..., description='The ID of the memory container.')
 
@@ -384,6 +384,14 @@ class UpdateAgenticMemoryArgs(BaseAgenticMemoryContainerArgs):
 
     @model_validator(mode='after')
     def validate_memory_type_fields(self) -> 'UpdateAgenticMemoryArgs':
+        """Validate that fields match the specified memory_type and minimum requirements.
+
+        Ensures that:
+        1. Fields exclusive to one memory type (e.g., 'messages' for 'working') are not
+           provided when updating another type (e.g., 'sessions').
+        2. 'working' and 'long-term' updates provide at least one
+           updatable field.
+        """
         set_fields = self.model_fields_set
 
         def _raise_not_allowed_error(field_name: str, memory_type: str):
@@ -843,7 +851,6 @@ class AddAgenticMemoriesArgs(BaseAgenticMemoryContainerArgs):
     @model_validator(mode='after')
     def validate_payload_requirements(self) -> 'AddAgenticMemoriesArgs':
         """Validate that the correct fields are provided based on payload_type."""
-
         # Getting fields that were actually set
         set_fields = self.model_fields_set
 

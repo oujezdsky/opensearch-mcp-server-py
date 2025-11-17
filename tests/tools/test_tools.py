@@ -1,24 +1,24 @@
 # Copyright OpenSearch Contributors
 # SPDX-License-Identifier: Apache-2.0
 
+import agentic_memory
 import json
 import pytest
-from unittest.mock import Mock, patch, AsyncMock
-from typing import Dict, Any
 from pydantic import ValidationError
 from tools.tool_params import (
-    MemoryType,
-    PayloadType,
+    ERR_EMBEDDING_DIMENSION_REQUIRED,
     ERR_FIELD_NOT_ALLOWED,
-    ERR_MISSING_WORKING_FIELD,
-    ERR_MISSING_LONG_TERM_FIELD,
-    ERR_MESSAGES_REQUIRED,
     ERR_FIELD_PROHIBITED,
+    ERR_MESSAGES_REQUIRED,
+    ERR_MISSING_LONG_TERM_FIELD,
+    ERR_MISSING_WORKING_FIELD,
     ERR_STRUCTURED_DATA_REQUIRED,
     EmbeddingModelType,
-    ERR_EMBEDDING_DIMENSION_REQUIRED,
+    MemoryType,
+    PayloadType,
 )
-import agentic_memory
+from typing import Any, Dict
+from unittest.mock import AsyncMock, Mock, patch
 
 
 class TestTools:
@@ -62,50 +62,50 @@ class TestTools:
         # Import after patching to ensure fresh imports
         from tools.tools import (
             TOOL_REGISTRY,
-            GetIndexMappingArgs,
-            GetShardsArgs,
-            ListIndicesArgs,
-            SearchIndexArgs,
-            GetClusterStateArgs,
-            GetSegmentsArgs,
+            AddAgenticMemoriesArgs,
             CatNodesArgs,
-            GetNodesArgs,
-            GetIndexInfoArgs,
-            GetIndexStatsArgs,
-            GetQueryInsightsArgs,
-            GetNodesHotThreadsArgs,
-            GetAllocationArgs,
-            GetLongRunningTasksArgs,
             CreateAgenticMemoryContainerArgs,
             CreateAgenticMemorySessionArgs,
-            AddAgenticMemoriesArgs,
-            GetAgenticMemoryArgs,
-            UpdateAgenticMemoryArgs,
             DeleteAgenticMemoryByIDArgs,
             DeleteAgenticMemoryByQueryArgs,
+            GetAgenticMemoryArgs,
+            GetAllocationArgs,
+            GetClusterStateArgs,
+            GetIndexInfoArgs,
+            GetIndexMappingArgs,
+            GetIndexStatsArgs,
+            GetLongRunningTasksArgs,
+            GetNodesArgs,
+            GetNodesHotThreadsArgs,
+            GetQueryInsightsArgs,
+            GetSegmentsArgs,
+            GetShardsArgs,
+            ListIndicesArgs,
             SearchAgenticMemoryArgs,
-            get_index_mapping_tool,
-            get_shards_tool,
-            list_indices_tool,
-            search_index_tool,
-            get_cluster_state_tool,
-            get_segments_tool,
+            SearchIndexArgs,
+            UpdateAgenticMemoryArgs,
+            add_agentic_memories_tool,
             cat_nodes_tool,
-            get_nodes_tool,
-            get_index_info_tool,
-            get_index_stats_tool,
-            get_query_insights_tool,
-            get_nodes_hot_threads_tool,
-            get_allocation_tool,
-            get_long_running_tasks_tool,
             create_agentic_memory_container_tool,
             create_agentic_memory_session_tool,
-            add_agentic_memories_tool,
-            get_agentic_memory_tool,
-            update_agentic_memory_tool,
-            delete_agentic_memoryby_ID_tool,
             delete_agentic_memory_by_query_tool,
+            delete_agentic_memoryby_ID_tool,
+            get_agentic_memory_tool,
+            get_allocation_tool,
+            get_cluster_state_tool,
+            get_index_info_tool,
+            get_index_mapping_tool,
+            get_index_stats_tool,
+            get_long_running_tasks_tool,
+            get_nodes_hot_threads_tool,
+            get_nodes_tool,
+            get_query_insights_tool,
+            get_segments_tool,
+            get_shards_tool,
+            list_indices_tool,
             search_agentic_memory_tool,
+            search_index_tool,
+            update_agentic_memory_tool,
         )
 
         self.ListIndicesArgs = ListIndicesArgs
@@ -1504,9 +1504,7 @@ class TestTools:
     async def test_add_agentic_memories_validation_error_invalid_messages_structure(
         self,
     ):
-        """
-        Test validation error (from sub-model) when messages have invalid structure.
-        """
+        """Test validation error (from sub-model) when messages have invalid structure."""
         with pytest.raises(ValidationError) as exc_info:
             self.AddAgenticMemoriesArgs(
                 opensearch_cluster_name='',

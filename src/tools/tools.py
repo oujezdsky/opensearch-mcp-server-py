@@ -3,33 +3,39 @@
 
 import json
 from .tool_params import (
+    AddAgenticMemoriesArgs,
+    CatNodesArgs,
+    CreateAgenticMemoryContainerArgs,
+    CreateAgenticMemorySessionArgs,
+    DeleteAgenticMemoryByIDArgs,
+    DeleteAgenticMemoryByQueryArgs,
+    GetAgenticMemoryArgs,
     GetAllocationArgs,
     GetClusterStateArgs,
     GetIndexInfoArgs,
     GetIndexMappingArgs,
     GetIndexStatsArgs,
     GetLongRunningTasksArgs,
-    CatNodesArgs,
     GetNodesArgs,
     GetNodesHotThreadsArgs,
     GetQueryInsightsArgs,
     GetSegmentsArgs,
     GetShardsArgs,
     ListIndicesArgs,
-    SearchIndexArgs,
-    baseToolArgs,
-    GetAgenticMemoryArgs,
-    CreateAgenticMemoryContainerArgs,
-    AddAgenticMemoriesArgs,
-    UpdateAgenticMemoryArgs,
     SearchAgenticMemoryArgs,
-    DeleteAgenticMemoryByIDArgs,
-    DeleteAgenticMemoryByQueryArgs,
-    CreateAgenticMemorySessionArgs,
+    SearchIndexArgs,
+    UpdateAgenticMemoryArgs,
+    baseToolArgs,
 )
 from .utils import is_tool_compatible
 from exceptions import HelperOperationError
 from opensearch.helper import (
+    add_agentic_memories,
+    create_agentic_memory_container,
+    create_agentic_memory_session,
+    delete_agentic_memory_by_id,
+    delete_agentic_memory_by_query,
+    get_agentic_memory,
     get_allocation,
     get_cluster_state,
     get_index,
@@ -38,21 +44,15 @@ from opensearch.helper import (
     get_index_stats,
     get_long_running_tasks,
     get_nodes,
-    get_nodes_info,
     get_nodes_hot_threads,
+    get_nodes_info,
     get_opensearch_version,
     get_query_insights,
     get_segments,
     get_shards,
     list_indices,
-    search_index,
-    create_agentic_memory_container,
-    create_agentic_memory_session,
-    add_agentic_memories,
-    get_agentic_memory,
-    delete_agentic_memory_by_id,
-    delete_agentic_memory_by_query,
     search_agentic_memory,
+    search_index,
     update_agentic_memory,
 )
 
@@ -582,7 +582,7 @@ async def add_agentic_memories_tool(args: AddAgenticMemoriesArgs) -> list[dict]:
         session_id = result.get('session_id')
         memory_id = result.get('working_memory_id')
 
-        message = f'Successfully added memory.'
+        message = 'Successfully added memory.'
         if memory_id:
             message += f' Working Memory ID: {memory_id}.'
         if session_id:
