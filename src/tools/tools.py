@@ -508,15 +508,15 @@ async def create_agentic_memory_container_tool(
     args: CreateAgenticMemoryContainerArgs,
 ) -> list[dict]:
     """Tool to create a new agentic memory container.
-    
+
     Args:
         args: CreateAgenticMemoryContainerArgs containing the name, description, and configuration for the new container.
-        
+
     Returns:
         list[dict]: A confirmation message with the new container ID in MCP format.
     """
     try:
-        result = create_agentic_memory_container(args)
+        result = await create_agentic_memory_container(args)
 
         container_id = result.get("memory_container_id")
         if container_id:
@@ -530,22 +530,27 @@ async def create_agentic_memory_container_tool(
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [{"type": "text", "text": f"Error creating memory container: {str(error_to_report)}"}]
+        return [
+            {
+                "type": "text",
+                "text": f"Error creating memory container: {str(error_to_report)}",
+            }
+        ]
 
 
 async def create_agentic_memory_session_tool(
     args: CreateAgenticMemorySessionArgs,
 ) -> list[dict]:
     """Tool to create a new session in an agentic memory container.
-    
+
     Args:
         args: CreateAgenticMemorySessionArgs containing the memory_container_id and optional session details like session_id, summary, metadata, or namespace.
-        
+
     Returns:
         list[dict]: A confirmation message with the new session ID in MCP format.
     """
     try:
-        result = create_agentic_memory_session(args)
+        result = await create_agentic_memory_session(args)
 
         session_id = result.get("session_id")
         message = (
@@ -558,20 +563,22 @@ async def create_agentic_memory_session_tool(
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [{"type": "text", "text": f"Error creating session: {str(error_to_report)}"}]
+        return [
+            {"type": "text", "text": f"Error creating session: {str(error_to_report)}"}
+        ]
 
 
 async def add_agentic_memories_tool(args: AddAgenticMemoriesArgs) -> list[dict]:
     """Tool to add memories to an agentic memory container.
-    
+
     Args:
         args: AddAgenticMemoriesArgs containing the memory_container_id, payload_type, and content (either messages or structured_data).
-        
+
     Returns:
         list[dict]: A confirmation message, often including the new working_memory_id or session_id, in MCP format.
     """
     try:
-        result = add_agentic_memories(args)
+        result = await add_agentic_memories(args)
         session_id = result.get("session_id")
         memory_id = result.get("working_memory_id")
 
@@ -587,40 +594,44 @@ async def add_agentic_memories_tool(args: AddAgenticMemoriesArgs) -> list[dict]:
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [{"type": "text", "text": f"Error adding memory: {str(error_to_report)}"}]
+        return [
+            {"type": "text", "text": f"Error adding memory: {str(error_to_report)}"}
+        ]
 
 
 async def get_agentic_memory_tool(args: GetAgenticMemoryArgs) -> list[dict]:
     """Tool to retrieve a specific agentic memory by its type and ID.
-    
+
     Args:
         args: GetAgenticMemoryArgs containing the memory_container_id, memory_type, and the specific memory id.
-        
+
     Returns:
         list[dict]: The retrieved memory object as a JSON string within a confirmation message, in MCP format.
     """
     try:
-        result = get_agentic_memory(args)
+        result = await get_agentic_memory(args)
         message = f"Successfully retrieved memory {args.id} ({args.memory_type.value}): {json.dumps(result)}"
         return [{"type": "text", "text": message}]
     except Exception as e:
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [{"type": "text", "text": f"Error getting memory: {str(error_to_report)}"}]
+        return [
+            {"type": "text", "text": f"Error getting memory: {str(error_to_report)}"}
+        ]
 
 
 async def update_agentic_memory_tool(args: UpdateAgenticMemoryArgs) -> list[dict]:
     """Tool to update a specific agentic memory (session, working, or long-term) by its ID.
-    
+
     Args:
         args: UpdateAgenticMemoryArgs containing the memory_container_id, memory_type, id, and the fields to be updated.
-        
+
     Returns:
         list[dict]: A confirmation message of the update operation in MCP format.
     """
     try:
-        result = update_agentic_memory(args)
+        result = await update_agentic_memory(args)
         memory_id = result.get("_id", args.id)
         message = f"Successfully updated memory {memory_id} ({args.memory_type.value}). Response: {json.dumps(result)}"
         return [{"type": "text", "text": message}]
@@ -628,22 +639,24 @@ async def update_agentic_memory_tool(args: UpdateAgenticMemoryArgs) -> list[dict
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [{"type": "text", "text": f"Error updating memory: {str(error_to_report)}"}]
+        return [
+            {"type": "text", "text": f"Error updating memory: {str(error_to_report)}"}
+        ]
 
 
 async def delete_agentic_memoryby_ID_tool(
     args: DeleteAgenticMemoryByIDArgs,
 ) -> list[dict]:
     """Tool to delete a specific agentic memory by its type and ID.
-    
+
     Args:
         args: DeleteAgenticMemoryByIDArgs containing the memory_container_id, memory_type, and the id of the memory to delete.
-        
+
     Returns:
         list[dict]: A confirmation message of the deletion in MCP format.
     """
     try:
-        result = delete_agentic_memory_by_id(args)
+        result = await delete_agentic_memory_by_id(args)
         memory_id = result.get("_id", args.id)
         message = f"Successfully deleted memory {memory_id} ({args.memory_type.value}). Response: {json.dumps(result)}"
         return [{"type": "text", "text": message}]
@@ -651,22 +664,24 @@ async def delete_agentic_memoryby_ID_tool(
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [{"type": "text", "text": f"Error deleting memory: {str(error_to_report)}"}]
+        return [
+            {"type": "text", "text": f"Error deleting memory: {str(error_to_report)}"}
+        ]
 
 
 async def delete_agentic_memory_by_query_tool(
     args: DeleteAgenticMemoryByQueryArgs,
 ) -> list[dict]:
     """Tool to delete agentic memories matching an OpenSearch query DSL.
-    
+
     Args:
         args: DeleteAgenticMemoryByQueryArgs containing the memory_container_id, memory_type, and the query.
-        
+
     Returns:
         list[dict]: A summary of the delete-by-query operation, including counts, in MCP format.
     """
     try:
-        result = delete_agentic_memory_by_query(args)
+        result = await delete_agentic_memory_by_query(args)
         deleted_count = result.get("deleted", 0)
         failures = result.get("failures", [])
 
@@ -686,20 +701,25 @@ async def delete_agentic_memory_by_query_tool(
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [{"type": "text", "text": f"Error deleting memories by query: {str(error_to_report)}"}]
+        return [
+            {
+                "type": "text",
+                "text": f"Error deleting memories by query: {str(error_to_report)}",
+            }
+        ]
 
 
 async def search_agentic_memory_tool(args: SearchAgenticMemoryArgs) -> list[dict]:
     """Tool to search for agentic memories using an OpenSearch query DSL.
-    
+
     Args:
         args: SearchAgenticMemoryArgs containing the memory_container_id, memory_type, query, and optional sort parameters.
-        
+
     Returns:
         list[dict]: The search results from OpenSearch as a JSON string within a summary message, in MCP format.
     """
     try:
-        result = search_agentic_memory(args)
+        result = await search_agentic_memory(args)
         hits = result.get("hits", {}).get("hits", [])
         count = len(hits)
         total = result.get("hits", {}).get("total", {}).get("value", count)
@@ -717,7 +737,9 @@ async def search_agentic_memory_tool(args: SearchAgenticMemoryArgs) -> list[dict
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [{"type": "text", "text": f"Error searching memory: {str(error_to_report)}"}]
+        return [
+            {"type": "text", "text": f"Error searching memory: {str(error_to_report)}"}
+        ]
 
 
 from .generic_api_tool import GenericOpenSearchApiArgs, generic_opensearch_api_tool
