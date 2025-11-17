@@ -1218,7 +1218,7 @@ class TestTools:
 
         # Execute
         args_payload: Dict[str, Any] = payload
-        args = self.CreateAgenticMemoryContainerArgs(**args_payload)  # type: ignore
+        args = self.CreateAgenticMemoryContainerArgs(opensearch_cluster_name="", **args_payload)  # type: ignore
         result = await self._create_agentic_memory_container_tool(args)
 
         # Assert
@@ -1244,7 +1244,7 @@ class TestTools:
         args_payload: Dict[str, Any] = agentic_memory.BASIC_CONFIG_PAYLOAD
 
         # Execute
-        args = self.CreateAgenticMemoryContainerArgs(**args_payload)  # type: ignore
+        args = self.CreateAgenticMemoryContainerArgs(opensearch_cluster_name="", **args_payload)  # type: ignore
         result = await self._create_agentic_memory_container_tool(args)
 
         # Assert
@@ -1262,6 +1262,7 @@ class TestTools:
         # Execute & Assert
         with pytest.raises(ValidationError) as exc_info:
             self.CreateAgenticMemoryContainerArgs(
+                opensearch_cluster_name="",
                 name="invalid container",
                 configuration={
                     "embedding_model_type": EmbeddingModelType.text_embedding,
@@ -1287,7 +1288,9 @@ class TestTools:
 
         # Execute
         args = self.CreateAgenticMemorySessionArgs(
-            memory_container_id=memory_container_id, **payload
+            opensearch_cluster_name="",
+            memory_container_id=memory_container_id,
+            **payload,
         )
         result = await self._create_agentic_memory_session_tool(args)
 
@@ -1317,7 +1320,7 @@ class TestTools:
 
         # Execute
         args = self.CreateAgenticMemorySessionArgs(
-            memory_container_id=container_id, **payload
+            opensearch_cluster_name="", memory_container_id=container_id, **payload
         )
         result = await self._create_agentic_memory_session_tool(args)
 
@@ -1345,7 +1348,10 @@ class TestTools:
 
         # Execute
         args = self.GetAgenticMemoryArgs(
-            memory_container_id=memory_container_id, type=memory_type, id=memory_id
+            opensearch_cluster_name="",
+            memory_container_id=memory_container_id,
+            type=memory_type,
+            id=memory_id,
         )
         result = await self._get_agentic_memory_tool(args)
 
@@ -1373,6 +1379,7 @@ class TestTools:
 
         # Execute
         args = self.GetAgenticMemoryArgs(
+            opensearch_cluster_name="",
             memory_container_id=memory_container_id,
             type=MemoryType.working,
             id="non_existent_id",
@@ -1398,7 +1405,9 @@ class TestTools:
 
         # Execute
         args = self.AddAgenticMemoriesArgs(
-            memory_container_id=memory_container_id, **payload
+            opensearch_cluster_name="",
+            memory_container_id=memory_container_id,
+            **payload,
         )
         result = await self._add_agentic_memories_tool(args)
 
@@ -1440,7 +1449,9 @@ class TestTools:
 
         # Execute
         args = self.AddAgenticMemoriesArgs(
-            memory_container_id=memory_container_id, **payload
+            opensearch_cluster_name="",
+            memory_container_id=memory_container_id,
+            **payload,
         )
         result = await self._add_agentic_memories_tool(args)
 
@@ -1454,7 +1465,9 @@ class TestTools:
         """Test validation error when messages are missing for conversational payload."""
         with pytest.raises(ValidationError) as exc_info:
             self.AddAgenticMemoriesArgs(
-                memory_container_id="id_123", payload_type=PayloadType.conversational
+                opensearch_cluster_name="",
+                memory_container_id="id_123",
+                payload_type=PayloadType.conversational,
             )
 
         errors = exc_info.value.errors()
@@ -1466,7 +1479,9 @@ class TestTools:
         """Test validation error when structured_data is missing for data payload."""
         with pytest.raises(ValidationError) as exc_info:
             self.AddAgenticMemoriesArgs(
-                memory_container_id="id_123", payload_type=PayloadType.data
+                opensearch_cluster_name="",
+                memory_container_id="id_123",
+                payload_type=PayloadType.data,
             )
 
         errors = exc_info.value.errors()
@@ -1478,6 +1493,7 @@ class TestTools:
         """Test validation error when both messages and structured_data are provided."""
         with pytest.raises(ValidationError) as exc_info:
             self.AddAgenticMemoriesArgs(
+                opensearch_cluster_name="",
                 memory_container_id="id_123",
                 messages=[{"content": [{"text": "Hello!", "type": "text"}]}],  # type: ignore
                 structured_data={"key": "value"},
@@ -1500,6 +1516,7 @@ class TestTools:
         """
         with pytest.raises(ValidationError) as exc_info:
             self.AddAgenticMemoriesArgs(
+                opensearch_cluster_name="",
                 memory_container_id="id_123",
                 messages=[
                     {
@@ -1529,7 +1546,10 @@ class TestTools:
 
         # Execute
         args = self.SearchAgenticMemoryArgs(
-            memory_container_id=memory_container_id, type=memory_type, **search_body
+            opensearch_cluster_name="",
+            memory_container_id=memory_container_id,
+            type=memory_type,
+            **search_body,
         )
         result = await self._search_agentic_memory_tool(args)
 
@@ -1561,7 +1581,10 @@ class TestTools:
 
         # Execute
         args = self.SearchAgenticMemoryArgs(
-            memory_container_id=container_id, type=MemoryType.sessions, **search_body
+            opensearch_cluster_name="",
+            memory_container_id=container_id,
+            type=MemoryType.sessions,
+            **search_body,
         )
         result = await self._search_agentic_memory_tool(args)
 
@@ -1589,7 +1612,10 @@ class TestTools:
 
         # Execute
         args = self.DeleteAgenticMemoryByIDArgs(
-            memory_container_id=memory_container_id, type=memory_type, id=memory_id
+            opensearch_cluster_name="",
+            memory_container_id=memory_container_id,
+            type=memory_type,
+            id=memory_id,
         )
         result = await self._delete_agentic_memoryby_ID_tool(args)
 
@@ -1620,7 +1646,10 @@ class TestTools:
 
         # Execute
         args = self.DeleteAgenticMemoryByIDArgs(
-            memory_container_id=memory_container_id, type=memory_type, id=memory_id
+            opensearch_cluster_name="",
+            memory_container_id=memory_container_id,
+            type=memory_type,
+            id=memory_id,
         )
         result = await self._delete_agentic_memoryby_ID_tool(args)
 
@@ -1651,7 +1680,10 @@ class TestTools:
 
         # Execute
         args = self.DeleteAgenticMemoryByQueryArgs(
-            memory_container_id=memory_container_id, type=memory_type, **query_body
+            opensearch_cluster_name="",
+            memory_container_id=memory_container_id,
+            type=memory_type,
+            **query_body,
         )
         result = await self._delete_agentic_memory_by_query_tool(args)
 
@@ -1683,7 +1715,10 @@ class TestTools:
 
         # Execute
         args = self.DeleteAgenticMemoryByQueryArgs(
-            memory_container_id=memory_container_id, type=memory_type, **query_body
+            opensearch_cluster_name="",
+            memory_container_id=memory_container_id,
+            type=memory_type,
+            **query_body,
         )
         result = await self._delete_agentic_memory_by_query_tool(args)
 
@@ -1717,6 +1752,7 @@ class TestTools:
 
         # Execute
         args = self.UpdateAgenticMemoryArgs(
+            opensearch_cluster_name="",
             memory_container_id=memory_container_id,
             type=memory_type,
             id=memory_id,
@@ -1748,6 +1784,7 @@ class TestTools:
 
         # Execute
         args = self.UpdateAgenticMemoryArgs(
+            opensearch_cluster_name="",
             memory_container_id=memory_container_id,
             type=MemoryType.working,
             id="non_existent_id",
@@ -1772,6 +1809,7 @@ class TestTools:
         """Test validation error when session has working memory fields."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
+                opensearch_cluster_name="",
                 memory_container_id="id_123",
                 type=MemoryType.sessions,
                 id="session_id",
@@ -1794,6 +1832,7 @@ class TestTools:
         """Test validation error when working memory has session fields."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
+                opensearch_cluster_name="",
                 memory_container_id="id_123",
                 type=MemoryType.working,
                 id="working_id",
@@ -1816,6 +1855,7 @@ class TestTools:
         """Test validation error when long-term memory has working fields."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
+                opensearch_cluster_name="",
                 memory_container_id="id_123",
                 type=MemoryType.long_term,
                 id="long_term_id",
@@ -1836,7 +1876,10 @@ class TestTools:
         """Test validation error when working memory has no updatable fields."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
-                memory_container_id="id_123", type=MemoryType.working, id="working_id"
+                opensearch_cluster_name="",
+                memory_container_id="id_123",
+                type=MemoryType.working,
+                id="working_id",
             )
 
         errors = exc_info.value.errors()
@@ -1848,6 +1891,7 @@ class TestTools:
         """Test validation error when long-term memory has no updatable fields."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
+                opensearch_cluster_name="",
                 memory_container_id="id_123",
                 type=MemoryType.long_term,
                 id="long_term_id",
@@ -1864,6 +1908,7 @@ class TestTools:
         """Test validation error (from sub-model) when working memory messages have invalid structure."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
+                opensearch_cluster_name="",
                 memory_container_id="id_123",
                 type=MemoryType.working,
                 id="working_id",
