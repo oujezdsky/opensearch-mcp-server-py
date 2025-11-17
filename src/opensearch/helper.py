@@ -310,17 +310,14 @@ async def create_agentic_memory_container(
     from .client import get_opensearch_client
 
     async with get_opensearch_client(args) as client:
+        url = '/_plugins/_ml/memory_containers/_create'
 
-        url = "/_plugins/_ml/memory_containers/_create"
-
-        body = args.model_dump(exclude_none=True, exclude={"opensearch_cluster_name"})
+        body = args.model_dump(exclude_none=True, exclude={'opensearch_cluster_name'})
 
         try:
-            response = await client.transport.perform_request(
-                method="POST", url=url, body=body
-            )
+            response = await client.transport.perform_request(method='POST', url=url, body=body)
         except Exception as e:
-            raise helper_error("create agentic memory container", e)
+            raise helper_error('create agentic memory container', e)
 
         return response
 
@@ -337,20 +334,19 @@ async def get_agentic_memory(args: GetAgenticMemoryArgs) -> Dict[str, Any]:
     from .client import get_opensearch_client
 
     async with get_opensearch_client(args) as client:
-
         url_parts = [
-            "/_plugins/_ml/memory_containers",
-            quote(args.memory_container_id, safe=""),
-            "memories",
-            quote(args.memory_type, safe=""),
-            quote(args.id, safe=""),
+            '/_plugins/_ml/memory_containers',
+            quote(args.memory_container_id, safe=''),
+            'memories',
+            quote(args.memory_type, safe=''),
+            quote(args.id, safe=''),
         ]
-        url = "/".join(url_parts)
+        url = '/'.join(url_parts)
 
         try:
-            response = await client.transport.perform_request(method="GET", url=url)
+            response = await client.transport.perform_request(method='GET', url=url)
         except Exception as e:
-            raise helper_error("get agentic memory", e)
+            raise helper_error('get agentic memory', e)
 
         return response
 
@@ -369,25 +365,22 @@ async def create_agentic_memory_session(
     from .client import get_opensearch_client
 
     async with get_opensearch_client(args) as client:
-
         url_parts = [
-            "/_plugins/_ml/memory_containers",
-            quote(args.memory_container_id, safe=""),
-            "memories/sessions",
+            '/_plugins/_ml/memory_containers',
+            quote(args.memory_container_id, safe=''),
+            'memories/sessions',
         ]
-        url = "/".join(url_parts)
+        url = '/'.join(url_parts)
 
         body = args.model_dump(
-            exclude={"memory_container_id", "opensearch_cluster_name"},
+            exclude={'memory_container_id', 'opensearch_cluster_name'},
             exclude_none=True,
         )
 
         try:
-            response = await client.transport.perform_request(
-                method="POST", url=url, body=body
-            )
+            response = await client.transport.perform_request(method='POST', url=url, body=body)
         except Exception as e:
-            raise helper_error("create agentic memory session", e)
+            raise helper_error('create agentic memory session', e)
 
         return response
 
@@ -404,26 +397,23 @@ async def add_agentic_memories(args: AddAgenticMemoriesArgs) -> Dict[str, Any]:
     from .client import get_opensearch_client
 
     async with get_opensearch_client(args) as client:
-
         url_parts = [
-            "/_plugins/_ml/memory_containers",
-            quote(args.memory_container_id, safe=""),
-            "memories",
+            '/_plugins/_ml/memory_containers',
+            quote(args.memory_container_id, safe=''),
+            'memories',
         ]
-        url = "/".join(url_parts)
+        url = '/'.join(url_parts)
 
         body = args.model_dump(
-            exclude={"memory_container_id", "opensearch_cluster_name"},
+            exclude={'memory_container_id', 'opensearch_cluster_name'},
             exclude_none=True,
             by_alias=True,
         )
 
         try:
-            response = await client.transport.perform_request(
-                method="POST", url=url, body=body
-            )
+            response = await client.transport.perform_request(method='POST', url=url, body=body)
         except Exception as e:
-            raise helper_error("add agentic memories", e)
+            raise helper_error('add agentic memories', e)
 
         return response
 
@@ -440,33 +430,30 @@ async def update_agentic_memory(args: UpdateAgenticMemoryArgs) -> Dict[str, Any]
     from .client import get_opensearch_client
 
     async with get_opensearch_client(args) as client:
-
         url_parts = [
-            "/_plugins/_ml/memory_containers",
-            quote(args.memory_container_id, safe=""),
-            "memories",
-            quote(args.memory_type, safe=""),
-            quote(args.id, safe=""),
+            '/_plugins/_ml/memory_containers',
+            quote(args.memory_container_id, safe=''),
+            'memories',
+            quote(args.memory_type, safe=''),
+            quote(args.id, safe=''),
         ]
-        url = "/".join(url_parts)
+        url = '/'.join(url_parts)
 
         body = args.model_dump(
             exclude={
-                "memory_container_id",
-                "memory_type",
-                "id",
-                "opensearch_cluster_name",
+                'memory_container_id',
+                'memory_type',
+                'id',
+                'opensearch_cluster_name',
             },
             exclude_none=True,
             by_alias=True,
         )
 
         try:
-            response = await client.transport.perform_request(
-                method="PUT", url=url, body=body
-            )
+            response = await client.transport.perform_request(method='PUT', url=url, body=body)
         except Exception as e:
-            raise helper_error("update agentic memory", e)
+            raise helper_error('update agentic memory', e)
 
         return response
 
@@ -485,20 +472,19 @@ async def delete_agentic_memory_by_id(
     from .client import get_opensearch_client
 
     async with get_opensearch_client(args) as client:
-
         url_parts = [
-            "/_plugins/_ml/memory_containers",
-            quote(args.memory_container_id, safe=""),
-            "memories",
-            quote(args.memory_type, safe=""),
-            quote(args.id, safe=""),
+            '/_plugins/_ml/memory_containers',
+            quote(args.memory_container_id, safe=''),
+            'memories',
+            quote(args.memory_type, safe=''),
+            quote(args.id, safe=''),
         ]
-        url = "/".join(url_parts)
+        url = '/'.join(url_parts)
 
         try:
-            response = await client.transport.perform_request(method="DELETE", url=url)
+            response = await client.transport.perform_request(method='DELETE', url=url)
         except Exception as e:
-            raise helper_error("delete agentic memory by ID", e)
+            raise helper_error('delete agentic memory by ID', e)
 
         return response
 
@@ -517,27 +503,24 @@ async def delete_agentic_memory_by_query(
     from .client import get_opensearch_client
 
     async with get_opensearch_client(args) as client:
-
         url_parts = [
-            "/_plugins/_ml/memory_containers",
-            quote(args.memory_container_id, safe=""),
-            "memories",
-            quote(args.memory_type, safe=""),
-            "_delete_by_query",
+            '/_plugins/_ml/memory_containers',
+            quote(args.memory_container_id, safe=''),
+            'memories',
+            quote(args.memory_type, safe=''),
+            '_delete_by_query',
         ]
-        url = "/".join(url_parts)
+        url = '/'.join(url_parts)
 
         body = args.model_dump(
-            exclude={"memory_container_id", "memory_type", "opensearch_cluster_name"},
+            exclude={'memory_container_id', 'memory_type', 'opensearch_cluster_name'},
             exclude_none=True,
         )
 
         try:
-            response = await client.transport.perform_request(
-                method="POST", url=url, body=body
-            )
+            response = await client.transport.perform_request(method='POST', url=url, body=body)
         except Exception as e:
-            raise helper_error("delete agentic memory by query", e)
+            raise helper_error('delete agentic memory by query', e)
 
         return response
 
@@ -554,26 +537,23 @@ async def search_agentic_memory(args: SearchAgenticMemoryArgs) -> Dict[str, Any]
     from .client import get_opensearch_client
 
     async with get_opensearch_client(args) as client:
-
         url_parts = [
-            "/_plugins/_ml/memory_containers",
-            quote(args.memory_container_id, safe=""),
-            "memories",
-            quote(args.memory_type, safe=""),
-            "_search",
+            '/_plugins/_ml/memory_containers',
+            quote(args.memory_container_id, safe=''),
+            'memories',
+            quote(args.memory_type, safe=''),
+            '_search',
         ]
-        url = "/".join(url_parts)
+        url = '/'.join(url_parts)
 
         body = args.model_dump(
-            exclude={"memory_container_id", "memory_type", "opensearch_cluster_name"},
+            exclude={'memory_container_id', 'memory_type', 'opensearch_cluster_name'},
             exclude_none=True,
         )
 
         try:
-            response = await client.transport.perform_request(
-                method="GET", url=url, body=body
-            )
+            response = await client.transport.perform_request(method='GET', url=url, body=body)
         except Exception as e:
-            raise helper_error("search agentic memory", e)
+            raise helper_error('search agentic memory', e)
 
         return response

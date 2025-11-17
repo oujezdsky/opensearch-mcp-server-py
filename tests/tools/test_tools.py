@@ -16,7 +16,7 @@ from tools.tool_params import (
     ERR_FIELD_PROHIBITED,
     ERR_STRUCTURED_DATA_REQUIRED,
     EmbeddingModelType,
-    ERR_EMBEDDING_DIMENSION_REQUIRED
+    ERR_EMBEDDING_DIMENSION_REQUIRED,
 )
 import agentic_memory
 
@@ -105,7 +105,7 @@ class TestTools:
             update_agentic_memory_tool,
             delete_agentic_memoryby_ID_tool,
             delete_agentic_memory_by_query_tool,
-            search_agentic_memory_tool
+            search_agentic_memory_tool,
         )
 
         self.ListIndicesArgs = ListIndicesArgs
@@ -1202,11 +1202,11 @@ class TestTools:
     @pytest.fixture
     def memory_container_id(self):
         """Fixture for a common memory container ID."""
-        return "HudqiJkB1SltqOcZusVU"
+        return 'HudqiJkB1SltqOcZusVU'
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        "payload, expected_body, mock_response",
+        'payload, expected_body, mock_response',
         agentic_memory.CREATE_CONTAINER_HAPPY_PATH_CASES,
     )
     async def test_create_agentic_memory_container_happy_paths(
@@ -1218,18 +1218,18 @@ class TestTools:
 
         # Execute
         args_payload: Dict[str, Any] = payload
-        args = self.CreateAgenticMemoryContainerArgs(opensearch_cluster_name="", **args_payload)  # type: ignore
+        args = self.CreateAgenticMemoryContainerArgs(opensearch_cluster_name='', **args_payload)  # type: ignore
         result = await self._create_agentic_memory_container_tool(args)
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Successfully created memory container" in result[0]["text"]
-        assert mock_response["memory_container_id"] in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Successfully created memory container' in result[0]['text']
+        assert mock_response['memory_container_id'] in result[0]['text']
 
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="POST",
-            url="/_plugins/_ml/memory_containers/_create",
+            method='POST',
+            url='/_plugins/_ml/memory_containers/_create',
             body=expected_body,
         )
 
@@ -1238,22 +1238,19 @@ class TestTools:
         """Test create_agentic_memory_container exception handling."""
         # Setup
         self.mock_client.transport.perform_request.side_effect = Exception(
-            "OpenSearch connection failed"
+            'OpenSearch connection failed'
         )
 
         args_payload: Dict[str, Any] = agentic_memory.BASIC_CONFIG_PAYLOAD
 
         # Execute
-        args = self.CreateAgenticMemoryContainerArgs(opensearch_cluster_name="", **args_payload)  # type: ignore
+        args = self.CreateAgenticMemoryContainerArgs(opensearch_cluster_name='', **args_payload)  # type: ignore
         result = await self._create_agentic_memory_container_tool(args)
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert (
-            "Error creating memory container: OpenSearch connection failed"
-            in result[0]["text"]
-        )
+        assert result[0]['type'] == 'text'
+        assert 'Error creating memory container: OpenSearch connection failed' in result[0]['text']
         self.mock_client.transport.perform_request.assert_called_once()
 
     @pytest.mark.asyncio
@@ -1262,22 +1259,22 @@ class TestTools:
         # Execute & Assert
         with pytest.raises(ValidationError) as exc_info:
             self.CreateAgenticMemoryContainerArgs(
-                opensearch_cluster_name="",
-                name="invalid container",
+                opensearch_cluster_name='',
+                name='invalid container',
                 configuration={
-                    "embedding_model_type": EmbeddingModelType.text_embedding,
-                    "embedding_model_id": "embedding-model-123",
+                    'embedding_model_type': EmbeddingModelType.text_embedding,
+                    'embedding_model_id': 'embedding-model-123',
                     # Embedding_dimension is missing
                 },  # type: ignore
             )
 
         errors = exc_info.value.errors()
         assert len(errors) == 1
-        assert errors[0]["type"] == ERR_EMBEDDING_DIMENSION_REQUIRED
+        assert errors[0]['type'] == ERR_EMBEDDING_DIMENSION_REQUIRED
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        "payload, mock_response", agentic_memory.CREATE_SESSION_HAPPY_PATH_CASES
+        'payload, mock_response', agentic_memory.CREATE_SESSION_HAPPY_PATH_CASES
     )
     async def test_create_agentic_memory_session_happy_paths(
         self, memory_container_id, payload, mock_response
@@ -1288,7 +1285,7 @@ class TestTools:
 
         # Execute
         args = self.CreateAgenticMemorySessionArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             **payload,
         )
@@ -1296,15 +1293,15 @@ class TestTools:
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Successfully created session" in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Successfully created session' in result[0]['text']
         # Verify that the ID from the response is in the output
-        assert mock_response["session_id"] in result[0]["text"]
+        assert mock_response['session_id'] in result[0]['text']
 
         # Request body verification
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="POST",
-            url=f"/_plugins/_ml/memory_containers/{memory_container_id}/memories/sessions",
+            method='POST',
+            url=f'/_plugins/_ml/memory_containers/{memory_container_id}/memories/sessions',
             body=payload,
         )
 
@@ -1313,30 +1310,30 @@ class TestTools:
         """Test create_agentic_memory_session exception handling."""
         # Setup
         self.mock_client.transport.perform_request.side_effect = Exception(
-            "Memory container not found"
+            'Memory container not found'
         )
-        payload: Dict[str, Any] = {"session_id": "abc123"}
-        container_id = "non_existent_container"
+        payload: Dict[str, Any] = {'session_id': 'abc123'}
+        container_id = 'non_existent_container'
 
         # Execute
         args = self.CreateAgenticMemorySessionArgs(
-            opensearch_cluster_name="", memory_container_id=container_id, **payload
+            opensearch_cluster_name='', memory_container_id=container_id, **payload
         )
         result = await self._create_agentic_memory_session_tool(args)
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Error creating session: Memory container not found" in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Error creating session: Memory container not found' in result[0]['text']
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="POST",
-            url=f"/_plugins/_ml/memory_containers/{container_id}/memories/sessions",
+            method='POST',
+            url=f'/_plugins/_ml/memory_containers/{container_id}/memories/sessions',
             body=payload,
         )
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        "memory_type, memory_id, mock_response",
+        'memory_type, memory_id, mock_response',
         agentic_memory.GET_MEMORY_HAPPY_PATH_CASES,
     )
     async def test_get_agentic_memory_happy_paths(
@@ -1348,7 +1345,7 @@ class TestTools:
 
         # Execute
         args = self.GetAgenticMemoryArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             type=memory_type,
             id=memory_id,
@@ -1357,43 +1354,41 @@ class TestTools:
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
+        assert result[0]['type'] == 'text'
         # Check that the response is in the body (as a JSON string)
-        assert mock_response["_id"] in result[0]["text"]
+        assert mock_response['_id'] in result[0]['text']
 
         expected_url = (
-            f"/_plugins/_ml/memory_containers/{memory_container_id}/"
-            f"memories/{memory_type.value}/{memory_id}"
+            f'/_plugins/_ml/memory_containers/{memory_container_id}/'
+            f'memories/{memory_type.value}/{memory_id}'
         )
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="GET", url=expected_url
+            method='GET', url=expected_url
         )
 
     @pytest.mark.asyncio
     async def test_get_agentic_memory_api_error(self, memory_container_id):
         """Test get_agentic_memory exception handling for API errors."""
         # Setup
-        self.mock_client.transport.perform_request.side_effect = Exception(
-            "Memory not found"
-        )
+        self.mock_client.transport.perform_request.side_effect = Exception('Memory not found')
 
         # Execute
         args = self.GetAgenticMemoryArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             type=MemoryType.working,
-            id="non_existent_id",
+            id='non_existent_id',
         )
         result = await self._get_agentic_memory_tool(args)
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Error getting memory: Memory not found" in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Error getting memory: Memory not found' in result[0]['text']
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        "payload, mock_response",
+        'payload, mock_response',
         agentic_memory.ADD_MEMORIES_HAPPY_PATH_CASES,
     )
     async def test_add_agentic_memories_happy_paths(
@@ -1405,7 +1400,7 @@ class TestTools:
 
         # Execute
         args = self.AddAgenticMemoriesArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             **payload,
         )
@@ -1413,24 +1408,24 @@ class TestTools:
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Successfully added memory" in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Successfully added memory' in result[0]['text']
 
         # Verify that the ID from the response is in the output
-        if "working_memory_id" in mock_response:
-            assert mock_response["working_memory_id"] in result[0]["text"]
-        if "session_id" in mock_response:
-            assert mock_response["session_id"] in result[0]["text"]
+        if 'working_memory_id' in mock_response:
+            assert mock_response['working_memory_id'] in result[0]['text']
+        if 'session_id' in mock_response:
+            assert mock_response['session_id'] in result[0]['text']
 
         # Request body validation
         # Pydantic adds default values (e.g., infer=False) that we need to take into account.
         expected_body = payload.copy()
-        if "infer" not in expected_body:
-            expected_body["infer"] = False  # Pydantic adds default=False
+        if 'infer' not in expected_body:
+            expected_body['infer'] = False  # Pydantic adds default=False
 
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="POST",
-            url=f"/_plugins/_ml/memory_containers/{memory_container_id}/memories",
+            method='POST',
+            url=f'/_plugins/_ml/memory_containers/{memory_container_id}/memories',
             body=expected_body,
         )
 
@@ -1438,18 +1433,16 @@ class TestTools:
     async def test_add_agentic_memories_api_error(self, memory_container_id):
         """Test add_agentic_memories exception handling from the API."""
         # Setup
-        self.mock_client.transport.perform_request.side_effect = Exception(
-            "Container not found"
-        )
+        self.mock_client.transport.perform_request.side_effect = Exception('Container not found')
 
         payload = {
-            "messages": [{"content": [{"text": "Hello!", "type": "text"}]}],
-            "payload_type": PayloadType.conversational,
+            'messages': [{'content': [{'text': 'Hello!', 'type': 'text'}]}],
+            'payload_type': PayloadType.conversational,
         }
 
         # Execute
         args = self.AddAgenticMemoriesArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             **payload,
         )
@@ -1457,55 +1450,55 @@ class TestTools:
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Error adding memory: Container not found" in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Error adding memory: Container not found' in result[0]['text']
 
     @pytest.mark.asyncio
     async def test_add_agentic_memories_validation_error_missing_messages(self):
         """Test validation error when messages are missing for conversational payload."""
         with pytest.raises(ValidationError) as exc_info:
             self.AddAgenticMemoriesArgs(
-                opensearch_cluster_name="",
-                memory_container_id="id_123",
+                opensearch_cluster_name='',
+                memory_container_id='id_123',
                 payload_type=PayloadType.conversational,
             )
 
         errors = exc_info.value.errors()
         assert len(errors) == 1
-        assert errors[0]["type"] == ERR_MESSAGES_REQUIRED
+        assert errors[0]['type'] == ERR_MESSAGES_REQUIRED
 
     @pytest.mark.asyncio
     async def test_add_agentic_memories_validation_error_missing_structured_data(self):
         """Test validation error when structured_data is missing for data payload."""
         with pytest.raises(ValidationError) as exc_info:
             self.AddAgenticMemoriesArgs(
-                opensearch_cluster_name="",
-                memory_container_id="id_123",
+                opensearch_cluster_name='',
+                memory_container_id='id_123',
                 payload_type=PayloadType.data,
             )
 
         errors = exc_info.value.errors()
         assert len(errors) > 0  # There may be more errors
-        assert any(e["type"] == ERR_STRUCTURED_DATA_REQUIRED for e in errors)
+        assert any(e['type'] == ERR_STRUCTURED_DATA_REQUIRED for e in errors)
 
     @pytest.mark.asyncio
     async def test_add_agentic_memories_validation_error_conflicting_fields(self):
         """Test validation error when both messages and structured_data are provided."""
         with pytest.raises(ValidationError) as exc_info:
             self.AddAgenticMemoriesArgs(
-                opensearch_cluster_name="",
-                memory_container_id="id_123",
-                messages=[{"content": [{"text": "Hello!", "type": "text"}]}],  # type: ignore
-                structured_data={"key": "value"},
+                opensearch_cluster_name='',
+                memory_container_id='id_123',
+                messages=[{'content': [{'text': 'Hello!', 'type': 'text'}]}],  # type: ignore
+                structured_data={'key': 'value'},
                 payload_type=PayloadType.conversational,
             )
 
         errors = exc_info.value.errors()
         assert len(errors) == 1
-        assert errors[0]["type"] == ERR_FIELD_PROHIBITED
-        ctx = errors[0].get("ctx")
+        assert errors[0]['type'] == ERR_FIELD_PROHIBITED
+        ctx = errors[0].get('ctx')
         assert ctx is not None
-        assert ctx["field_name"] == "structured_data"
+        assert ctx['field_name'] == 'structured_data'
 
     @pytest.mark.asyncio
     async def test_add_agentic_memories_validation_error_invalid_messages_structure(
@@ -1516,11 +1509,11 @@ class TestTools:
         """
         with pytest.raises(ValidationError) as exc_info:
             self.AddAgenticMemoriesArgs(
-                opensearch_cluster_name="",
-                memory_container_id="id_123",
+                opensearch_cluster_name='',
+                memory_container_id='id_123',
                 messages=[
                     {
-                        "role": "user"
+                        'role': 'user'
                         # Missing 'content'
                     }
                 ],  # type: ignore
@@ -1529,12 +1522,12 @@ class TestTools:
 
         errors = exc_info.value.errors()
         assert len(errors) == 1
-        assert errors[0]["type"] == "missing"
-        assert errors[0]["loc"] == ("messages", 0, "content")
+        assert errors[0]['type'] == 'missing'
+        assert errors[0]['loc'] == ('messages', 0, 'content')
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        "memory_type, search_body, mock_response",
+        'memory_type, search_body, mock_response',
         agentic_memory.SEARCH_MEMORY_HAPPY_PATH_CASES,
     )
     async def test_search_agentic_memory_happy_paths(
@@ -1546,7 +1539,7 @@ class TestTools:
 
         # Execute
         args = self.SearchAgenticMemoryArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             type=memory_type,
             **search_body,
@@ -1555,33 +1548,31 @@ class TestTools:
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert f"Search results for {memory_type.value}" in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert f'Search results for {memory_type.value}' in result[0]['text']
 
         # Verify that the response is in the body (as a JSON string)
-        assert json.dumps(mock_response) in result[0]["text"]
+        assert json.dumps(mock_response) in result[0]['text']
 
         expected_url = (
-            f"/_plugins/_ml/memory_containers/{memory_container_id}/"
-            f"memories/{memory_type.value}/_search"
+            f'/_plugins/_ml/memory_containers/{memory_container_id}/'
+            f'memories/{memory_type.value}/_search'
         )
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="GET", url=expected_url, body=search_body
+            method='GET', url=expected_url, body=search_body
         )
 
     @pytest.mark.asyncio
     async def test_search_agentic_memory_api_error(self):
         """Test search_agentic_memory exception handling for API errors."""
         # Setup
-        self.mock_client.transport.perform_request.side_effect = Exception(
-            "Container not found"
-        )
-        container_id = "non_existent_container"
-        search_body: Dict[str, Any] = {"query": {"match_all": {}}}
+        self.mock_client.transport.perform_request.side_effect = Exception('Container not found')
+        container_id = 'non_existent_container'
+        search_body: Dict[str, Any] = {'query': {'match_all': {}}}
 
         # Execute
         args = self.SearchAgenticMemoryArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=container_id,
             type=MemoryType.sessions,
             **search_body,
@@ -1590,17 +1581,17 @@ class TestTools:
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Error searching memory: Container not found" in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Error searching memory: Container not found' in result[0]['text']
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="GET",
-            url=f"/_plugins/_ml/memory_containers/{container_id}/memories/sessions/_search",
+            method='GET',
+            url=f'/_plugins/_ml/memory_containers/{container_id}/memories/sessions/_search',
             body=search_body,
         )
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        "memory_type, memory_id, mock_response",
+        'memory_type, memory_id, mock_response',
         agentic_memory.DELETE_MEMORY_ID_HAPPY_PATH_CASES,
     )
     async def test_delete_agentic_memory_by_id_happy_paths(
@@ -1612,7 +1603,7 @@ class TestTools:
 
         # Execute
         args = self.DeleteAgenticMemoryByIDArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             type=memory_type,
             id=memory_id,
@@ -1621,32 +1612,30 @@ class TestTools:
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Successfully deleted memory" in result[0]["text"]
-        assert memory_id in result[0]["text"]
-        assert memory_type.value in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Successfully deleted memory' in result[0]['text']
+        assert memory_id in result[0]['text']
+        assert memory_type.value in result[0]['text']
 
         expected_url = (
-            f"/_plugins/_ml/memory_containers/{memory_container_id}/"
-            f"memories/{memory_type.value}/{memory_id}"
+            f'/_plugins/_ml/memory_containers/{memory_container_id}/'
+            f'memories/{memory_type.value}/{memory_id}'
         )
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="DELETE", url=expected_url
+            method='DELETE', url=expected_url
         )
 
     @pytest.mark.asyncio
     async def test_delete_agentic_memory_by_id_error(self, memory_container_id):
         """Test delete_agentic_memory_by_id exception handling."""
         # Setup
-        self.mock_client.transport.perform_request.side_effect = Exception(
-            "Memory not found"
-        )
+        self.mock_client.transport.perform_request.side_effect = Exception('Memory not found')
         memory_type = MemoryType.working
-        memory_id = "non_existent_id"
+        memory_id = 'non_existent_id'
 
         # Execute
         args = self.DeleteAgenticMemoryByIDArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             type=memory_type,
             id=memory_id,
@@ -1655,20 +1644,20 @@ class TestTools:
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Error deleting memory: Memory not found" in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Error deleting memory: Memory not found' in result[0]['text']
 
         expected_url = (
-            f"/_plugins/_ml/memory_containers/{memory_container_id}/"
-            f"memories/{memory_type.value}/{memory_id}"
+            f'/_plugins/_ml/memory_containers/{memory_container_id}/'
+            f'memories/{memory_type.value}/{memory_id}'
         )
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="DELETE", url=expected_url
+            method='DELETE', url=expected_url
         )
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        "memory_type, query_body, mock_response",
+        'memory_type, query_body, mock_response',
         agentic_memory.DELETE_MEMORY_QUERY_HAPPY_PATH_CASES,
     )
     async def test_delete_agentic_memory_by_query_happy_paths(
@@ -1680,7 +1669,7 @@ class TestTools:
 
         # Execute
         args = self.DeleteAgenticMemoryByQueryArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             type=memory_type,
             **query_body,
@@ -1689,17 +1678,17 @@ class TestTools:
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Successfully deleted memories by query" in result[0]["text"]
-        assert f"Deleted: {mock_response['deleted']}" in result[0]["text"]
-        assert memory_type.value in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Successfully deleted memories by query' in result[0]['text']
+        assert f'Deleted: {mock_response["deleted"]}' in result[0]['text']
+        assert memory_type.value in result[0]['text']
 
         expected_url = (
-            f"/_plugins/_ml/memory_containers/{memory_container_id}/"
-            f"memories/{memory_type.value}/_delete_by_query"
+            f'/_plugins/_ml/memory_containers/{memory_container_id}/'
+            f'memories/{memory_type.value}/_delete_by_query'
         )
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="POST", url=expected_url, body=query_body
+            method='POST', url=expected_url, body=query_body
         )
 
     @pytest.mark.asyncio
@@ -1707,15 +1696,15 @@ class TestTools:
         """Test delete_agentic_memory_by_query exception handling."""
         # Setup
         self.mock_client.transport.perform_request.side_effect = Exception(
-            "Query validation failed"
+            'Query validation failed'
         )
         memory_type = MemoryType.working
 
-        query_body: Dict[str, Any] = {"query": {"invalid_query": {"field": "value"}}}
+        query_body: Dict[str, Any] = {'query': {'invalid_query': {'field': 'value'}}}
 
         # Execute
         args = self.DeleteAgenticMemoryByQueryArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             type=memory_type,
             **query_body,
@@ -1724,23 +1713,20 @@ class TestTools:
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert (
-            "Error deleting memories by query: Query validation failed"
-            in result[0]["text"]
-        )
+        assert result[0]['type'] == 'text'
+        assert 'Error deleting memories by query: Query validation failed' in result[0]['text']
 
         expected_url = (
-            f"/_plugins/_ml/memory_containers/{memory_container_id}/"
-            f"memories/{memory_type.value}/_delete_by_query"
+            f'/_plugins/_ml/memory_containers/{memory_container_id}/'
+            f'memories/{memory_type.value}/_delete_by_query'
         )
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="POST", url=expected_url, body=query_body
+            method='POST', url=expected_url, body=query_body
         )
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
-        "memory_type, memory_id, update_body, mock_response",
+        'memory_type, memory_id, update_body, mock_response',
         agentic_memory.UPDATE_HAPPY_PATH_CASES,
     )
     async def test_update_agentic_memory_happy_paths(
@@ -1752,7 +1738,7 @@ class TestTools:
 
         # Execute
         args = self.UpdateAgenticMemoryArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             type=memory_type,
             id=memory_id,
@@ -1762,44 +1748,42 @@ class TestTools:
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Successfully updated memory" in result[0]["text"]
-        assert memory_id in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Successfully updated memory' in result[0]['text']
+        assert memory_id in result[0]['text']
 
         expected_url = (
-            f"/_plugins/_ml/memory_containers/{memory_container_id}/"
-            f"memories/{memory_type.value}/{memory_id}"
+            f'/_plugins/_ml/memory_containers/{memory_container_id}/'
+            f'memories/{memory_type.value}/{memory_id}'
         )
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="PUT", url=expected_url, body=update_body
+            method='PUT', url=expected_url, body=update_body
         )
 
     @pytest.mark.asyncio
     async def test_update_agentic_memory_api_error(self, memory_container_id):
         """Test update_agentic_memory exception handling from the API."""
         # Setup
-        self.mock_client.transport.perform_request.side_effect = Exception(
-            "Memory not found"
-        )
+        self.mock_client.transport.perform_request.side_effect = Exception('Memory not found')
 
         # Execute
         args = self.UpdateAgenticMemoryArgs(
-            opensearch_cluster_name="",
+            opensearch_cluster_name='',
             memory_container_id=memory_container_id,
             type=MemoryType.working,
-            id="non_existent_id",
-            tags={"topic": "test"},
+            id='non_existent_id',
+            tags={'topic': 'test'},
         )
         result = await self._update_agentic_memory_tool(args)
 
         # Assert
         assert len(result) == 1
-        assert result[0]["type"] == "text"
-        assert "Error updating memory: Memory not found" in result[0]["text"]
+        assert result[0]['type'] == 'text'
+        assert 'Error updating memory: Memory not found' in result[0]['text']
         self.mock_client.transport.perform_request.assert_called_once_with(
-            method="PUT",
-            url=f"/_plugins/_ml/memory_containers/{memory_container_id}/memories/working/non_existent_id",
-            body={"tags": {"topic": "test"}},
+            method='PUT',
+            url=f'/_plugins/_ml/memory_containers/{memory_container_id}/memories/working/non_existent_id',
+            body={'tags': {'topic': 'test'}},
         )
 
     @pytest.mark.asyncio
@@ -1809,21 +1793,21 @@ class TestTools:
         """Test validation error when session has working memory fields."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
-                opensearch_cluster_name="",
-                memory_container_id="id_123",
+                opensearch_cluster_name='',
+                memory_container_id='id_123',
                 type=MemoryType.sessions,
-                id="session_id",
-                messages=[{"role": "user", "content": [{"text": "test", "type": "text"}]}],  # type: ignore
+                id='session_id',
+                messages=[{'role': 'user', 'content': [{'text': 'test', 'type': 'text'}]}],  # type: ignore
             )
 
         errors = exc_info.value.errors()
         assert len(errors) == 1
-        assert errors[0]["type"] == ERR_FIELD_NOT_ALLOWED
+        assert errors[0]['type'] == ERR_FIELD_NOT_ALLOWED
 
-        ctx = errors[0].get("ctx")
+        ctx = errors[0].get('ctx')
         assert ctx is not None
-        assert ctx["field_name"] == "messages"
-        assert ctx["memory_type"] == "session"
+        assert ctx['field_name'] == 'messages'
+        assert ctx['memory_type'] == 'session'
 
     @pytest.mark.asyncio
     async def test_update_agentic_memory_validation_error_working_with_session_fields(
@@ -1832,21 +1816,21 @@ class TestTools:
         """Test validation error when working memory has session fields."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
-                opensearch_cluster_name="",
-                memory_container_id="id_123",
+                opensearch_cluster_name='',
+                memory_container_id='id_123',
                 type=MemoryType.working,
-                id="working_id",
-                summary="This should not be here",  # Session field
+                id='working_id',
+                summary='This should not be here',  # Session field
             )
 
         errors = exc_info.value.errors()
         assert len(errors) == 1
-        assert errors[0]["type"] == ERR_FIELD_NOT_ALLOWED
+        assert errors[0]['type'] == ERR_FIELD_NOT_ALLOWED
 
-        ctx = errors[0].get("ctx")
+        ctx = errors[0].get('ctx')
         assert ctx is not None
-        assert ctx["field_name"] == "summary"
-        assert ctx["memory_type"] == "working"
+        assert ctx['field_name'] == 'summary'
+        assert ctx['memory_type'] == 'working'
 
     @pytest.mark.asyncio
     async def test_update_agentic_memory_validation_error_long_term_with_working_fields(
@@ -1855,51 +1839,51 @@ class TestTools:
         """Test validation error when long-term memory has working fields."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
-                opensearch_cluster_name="",
-                memory_container_id="id_123",
+                opensearch_cluster_name='',
+                memory_container_id='id_123',
                 type=MemoryType.long_term,
-                id="long_term_id",
-                structured_data={"key": "value"},  # Working field
+                id='long_term_id',
+                structured_data={'key': 'value'},  # Working field
             )
 
         errors = exc_info.value.errors()
         assert len(errors) == 1
-        assert errors[0]["type"] == ERR_FIELD_NOT_ALLOWED
+        assert errors[0]['type'] == ERR_FIELD_NOT_ALLOWED
 
-        ctx = errors[0].get("ctx")
+        ctx = errors[0].get('ctx')
         assert ctx is not None
-        assert ctx["field_name"] == "structured_data"
-        assert ctx["memory_type"] == "long-term"
+        assert ctx['field_name'] == 'structured_data'
+        assert ctx['memory_type'] == 'long-term'
 
     @pytest.mark.asyncio
     async def test_update_agentic_memory_validation_error_working_no_fields(self):
         """Test validation error when working memory has no updatable fields."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
-                opensearch_cluster_name="",
-                memory_container_id="id_123",
+                opensearch_cluster_name='',
+                memory_container_id='id_123',
                 type=MemoryType.working,
-                id="working_id",
+                id='working_id',
             )
 
         errors = exc_info.value.errors()
         assert len(errors) == 1
-        assert errors[0]["type"] == ERR_MISSING_WORKING_FIELD
+        assert errors[0]['type'] == ERR_MISSING_WORKING_FIELD
 
     @pytest.mark.asyncio
     async def test_update_agentic_memory_validation_error_long_term_no_fields(self):
         """Test validation error when long-term memory has no updatable fields."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
-                opensearch_cluster_name="",
-                memory_container_id="id_123",
+                opensearch_cluster_name='',
+                memory_container_id='id_123',
                 type=MemoryType.long_term,
-                id="long_term_id",
+                id='long_term_id',
             )
 
         errors = exc_info.value.errors()
         assert len(errors) == 1
-        assert errors[0]["type"] == ERR_MISSING_LONG_TERM_FIELD
+        assert errors[0]['type'] == ERR_MISSING_LONG_TERM_FIELD
 
     @pytest.mark.asyncio
     async def test_update_agentic_memory_validation_error_working_invalid_messages(
@@ -1908,13 +1892,13 @@ class TestTools:
         """Test validation error (from sub-model) when working memory messages have invalid structure."""
         with pytest.raises(ValidationError) as exc_info:
             self.UpdateAgenticMemoryArgs(
-                opensearch_cluster_name="",
-                memory_container_id="id_123",
+                opensearch_cluster_name='',
+                memory_container_id='id_123',
                 type=MemoryType.working,
-                id="working_id",
+                id='working_id',
                 messages=[
                     {
-                        "role": "user"
+                        'role': 'user'
                         # Missing 'content' field
                     }
                 ],  # type: ignore
@@ -1922,8 +1906,8 @@ class TestTools:
 
         errors = exc_info.value.errors()
         assert len(errors) == 1
-        assert errors[0]["type"] == "missing"
-        assert errors[0]["loc"] == ("messages", 0, "content")
+        assert errors[0]['type'] == 'missing'
+        assert errors[0]['loc'] == ('messages', 0, 'content')
 
     # ! --- Agentic Memory tests ---
 
@@ -1951,7 +1935,7 @@ class TestTools:
             'UpdateAgenticMemoryArgsTool',
             'DeleteAgenticMemoryByIDTool',
             'DeleteAgenticMemoryByQueryTool',
-            'SearchAgenticMemoryTool'
+            'SearchAgenticMemoryTool',
         ]
 
         for tool in expected_tools:

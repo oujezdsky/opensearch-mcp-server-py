@@ -25,7 +25,7 @@ from .tool_params import (
     SearchAgenticMemoryArgs,
     DeleteAgenticMemoryByIDArgs,
     DeleteAgenticMemoryByQueryArgs,
-    CreateAgenticMemorySessionArgs
+    CreateAgenticMemorySessionArgs,
 )
 from .utils import is_tool_compatible
 from exceptions import HelperOperationError
@@ -53,7 +53,7 @@ from opensearch.helper import (
     delete_agentic_memory_by_id,
     delete_agentic_memory_by_query,
     search_agentic_memory,
-    update_agentic_memory
+    update_agentic_memory,
 )
 
 
@@ -518,13 +518,15 @@ async def create_agentic_memory_container_tool(
     try:
         result = await create_agentic_memory_container(args)
 
-        container_id = result.get("memory_container_id")
+        container_id = result.get('memory_container_id')
         if container_id:
-            message = f"Successfully created memory container. ID: {container_id}. Response: {json.dumps(result)}"
+            message = f'Successfully created memory container. ID: {container_id}. Response: {json.dumps(result)}'
         else:
-            message = f"Memory container created, but no ID was returned. Response: {json.dumps(result)}"
+            message = (
+                f'Memory container created, but no ID was returned. Response: {json.dumps(result)}'
+            )
 
-        return [{"type": "text", "text": message}]
+        return [{'type': 'text', 'text': message}]
 
     except Exception as e:
         error_to_report = e
@@ -532,8 +534,8 @@ async def create_agentic_memory_container_tool(
             error_to_report = e.original
         return [
             {
-                "type": "text",
-                "text": f"Error creating memory container: {str(error_to_report)}",
+                'type': 'text',
+                'text': f'Error creating memory container: {str(error_to_report)}',
             }
         ]
 
@@ -552,20 +554,18 @@ async def create_agentic_memory_session_tool(
     try:
         result = await create_agentic_memory_session(args)
 
-        session_id = result.get("session_id")
+        session_id = result.get('session_id')
         message = (
-            f"Successfully created session. ID: {session_id}. Response: {json.dumps(result)}"
+            f'Successfully created session. ID: {session_id}. Response: {json.dumps(result)}'
             if session_id
-            else f"Session created, but no ID was returned. Response: {json.dumps(result)}"
+            else f'Session created, but no ID was returned. Response: {json.dumps(result)}'
         )
-        return [{"type": "text", "text": message}]
+        return [{'type': 'text', 'text': message}]
     except Exception as e:
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [
-            {"type": "text", "text": f"Error creating session: {str(error_to_report)}"}
-        ]
+        return [{'type': 'text', 'text': f'Error creating session: {str(error_to_report)}'}]
 
 
 async def add_agentic_memories_tool(args: AddAgenticMemoriesArgs) -> list[dict]:
@@ -579,24 +579,22 @@ async def add_agentic_memories_tool(args: AddAgenticMemoriesArgs) -> list[dict]:
     """
     try:
         result = await add_agentic_memories(args)
-        session_id = result.get("session_id")
-        memory_id = result.get("working_memory_id")
+        session_id = result.get('session_id')
+        memory_id = result.get('working_memory_id')
 
-        message = f"Successfully added memory."
+        message = f'Successfully added memory.'
         if memory_id:
-            message += f" Working Memory ID: {memory_id}."
+            message += f' Working Memory ID: {memory_id}.'
         if session_id:
-            message += f" Session ID: {session_id}."
-        message += f" Response: {json.dumps(result)}"
+            message += f' Session ID: {session_id}.'
+        message += f' Response: {json.dumps(result)}'
 
-        return [{"type": "text", "text": message}]
+        return [{'type': 'text', 'text': message}]
     except Exception as e:
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [
-            {"type": "text", "text": f"Error adding memory: {str(error_to_report)}"}
-        ]
+        return [{'type': 'text', 'text': f'Error adding memory: {str(error_to_report)}'}]
 
 
 async def get_agentic_memory_tool(args: GetAgenticMemoryArgs) -> list[dict]:
@@ -610,15 +608,13 @@ async def get_agentic_memory_tool(args: GetAgenticMemoryArgs) -> list[dict]:
     """
     try:
         result = await get_agentic_memory(args)
-        message = f"Successfully retrieved memory {args.id} ({args.memory_type.value}): {json.dumps(result)}"
-        return [{"type": "text", "text": message}]
+        message = f'Successfully retrieved memory {args.id} ({args.memory_type.value}): {json.dumps(result)}'
+        return [{'type': 'text', 'text': message}]
     except Exception as e:
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [
-            {"type": "text", "text": f"Error getting memory: {str(error_to_report)}"}
-        ]
+        return [{'type': 'text', 'text': f'Error getting memory: {str(error_to_report)}'}]
 
 
 async def update_agentic_memory_tool(args: UpdateAgenticMemoryArgs) -> list[dict]:
@@ -632,16 +628,14 @@ async def update_agentic_memory_tool(args: UpdateAgenticMemoryArgs) -> list[dict
     """
     try:
         result = await update_agentic_memory(args)
-        memory_id = result.get("_id", args.id)
-        message = f"Successfully updated memory {memory_id} ({args.memory_type.value}). Response: {json.dumps(result)}"
-        return [{"type": "text", "text": message}]
+        memory_id = result.get('_id', args.id)
+        message = f'Successfully updated memory {memory_id} ({args.memory_type.value}). Response: {json.dumps(result)}'
+        return [{'type': 'text', 'text': message}]
     except Exception as e:
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [
-            {"type": "text", "text": f"Error updating memory: {str(error_to_report)}"}
-        ]
+        return [{'type': 'text', 'text': f'Error updating memory: {str(error_to_report)}'}]
 
 
 async def delete_agentic_memoryby_ID_tool(
@@ -657,16 +651,14 @@ async def delete_agentic_memoryby_ID_tool(
     """
     try:
         result = await delete_agentic_memory_by_id(args)
-        memory_id = result.get("_id", args.id)
-        message = f"Successfully deleted memory {memory_id} ({args.memory_type.value}). Response: {json.dumps(result)}"
-        return [{"type": "text", "text": message}]
+        memory_id = result.get('_id', args.id)
+        message = f'Successfully deleted memory {memory_id} ({args.memory_type.value}). Response: {json.dumps(result)}'
+        return [{'type': 'text', 'text': message}]
     except Exception as e:
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [
-            {"type": "text", "text": f"Error deleting memory: {str(error_to_report)}"}
-        ]
+        return [{'type': 'text', 'text': f'Error deleting memory: {str(error_to_report)}'}]
 
 
 async def delete_agentic_memory_by_query_tool(
@@ -682,29 +674,29 @@ async def delete_agentic_memory_by_query_tool(
     """
     try:
         result = await delete_agentic_memory_by_query(args)
-        deleted_count = result.get("deleted", 0)
-        failures = result.get("failures", [])
+        deleted_count = result.get('deleted', 0)
+        failures = result.get('failures', [])
 
         if failures:
             message = (
-                f"Delete by query for {args.memory_type.value} completed with {len(failures)} failures. "
-                f"Deleted: {deleted_count}. Response: {json.dumps(result)}"
+                f'Delete by query for {args.memory_type.value} completed with {len(failures)} failures. '
+                f'Deleted: {deleted_count}. Response: {json.dumps(result)}'
             )
         else:
             message = (
-                f"Successfully deleted memories by query for {args.memory_type.value}. "
-                f"Deleted: {deleted_count}. Response: {json.dumps(result)}"
+                f'Successfully deleted memories by query for {args.memory_type.value}. '
+                f'Deleted: {deleted_count}. Response: {json.dumps(result)}'
             )
 
-        return [{"type": "text", "text": message}]
+        return [{'type': 'text', 'text': message}]
     except Exception as e:
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
         return [
             {
-                "type": "text",
-                "text": f"Error deleting memories by query: {str(error_to_report)}",
+                'type': 'text',
+                'text': f'Error deleting memories by query: {str(error_to_report)}',
             }
         ]
 
@@ -720,26 +712,24 @@ async def search_agentic_memory_tool(args: SearchAgenticMemoryArgs) -> list[dict
     """
     try:
         result = await search_agentic_memory(args)
-        hits = result.get("hits", {}).get("hits", [])
+        hits = result.get('hits', {}).get('hits', [])
         count = len(hits)
-        total = result.get("hits", {}).get("total", {}).get("value", count)
+        total = result.get('hits', {}).get('total', {}).get('value', count)
 
         if total == 0:
-            message = f"Search results for {args.memory_type.value}: No memories found. Response: {json.dumps(result)}"
+            message = f'Search results for {args.memory_type.value}: No memories found. Response: {json.dumps(result)}'
         else:
             message = (
-                f"Search results for {args.memory_type.value}: Found {total} memories, returning {count}. "
-                f"Response: {json.dumps(result)}"
+                f'Search results for {args.memory_type.value}: Found {total} memories, returning {count}. '
+                f'Response: {json.dumps(result)}'
             )
 
-        return [{"type": "text", "text": message}]
+        return [{'type': 'text', 'text': message}]
     except Exception as e:
         error_to_report = e
         if isinstance(e, HelperOperationError):
             error_to_report = e.original
-        return [
-            {"type": "text", "text": f"Error searching memory: {str(error_to_report)}"}
-        ]
+        return [{'type': 'text', 'text': f'Error searching memory: {str(error_to_report)}'}]
 
 
 from .generic_api_tool import GenericOpenSearchApiArgs, generic_opensearch_api_tool
@@ -885,7 +875,7 @@ TOOL_REGISTRY = {
         'input_schema': CreateAgenticMemoryContainerArgs.model_json_schema(),
         'function': create_agentic_memory_container_tool,
         'args_model': CreateAgenticMemoryContainerArgs,
-        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
         'http_methods': 'POST',
     },
     'CreateAgenticMemorySessionTool': {
@@ -894,7 +884,7 @@ TOOL_REGISTRY = {
         'input_schema': CreateAgenticMemorySessionArgs.model_json_schema(),
         'function': create_agentic_memory_session,
         'args_model': CreateAgenticMemorySessionArgs,
-        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
         'http_methods': 'UPDATE',
     },
     'AddAgenticMemoriesTool': {
@@ -903,7 +893,7 @@ TOOL_REGISTRY = {
         'input_schema': AddAgenticMemoriesArgs.model_json_schema(),
         'function': add_agentic_memories_tool,
         'args_model': AddAgenticMemoriesArgs,
-        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
         'http_methods': 'UPDATE',
     },
     'GetAgenticMemoryTool': {
@@ -912,7 +902,7 @@ TOOL_REGISTRY = {
         'input_schema': GetAgenticMemoryArgs.model_json_schema(),
         'function': get_agentic_memory_tool,
         'args_model': GetAgenticMemoryArgs,
-        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
         'http_methods': 'GET',
     },
     'UpdateAgenticMemoryArgsTool': {
@@ -921,7 +911,7 @@ TOOL_REGISTRY = {
         'input_schema': UpdateAgenticMemoryArgs.model_json_schema(),
         'function': update_agentic_memory_tool,
         'args_model': UpdateAgenticMemoryArgs,
-        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
         'http_methods': 'UPDATE',
     },
     'DeleteAgenticMemoryByIDTool': {
@@ -930,7 +920,7 @@ TOOL_REGISTRY = {
         'input_schema': DeleteAgenticMemoryByIDArgs.model_json_schema(),
         'function': delete_agentic_memoryby_ID_tool,
         'args_model': DeleteAgenticMemoryByIDArgs,
-        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
         'http_methods': 'UPDATE',
     },
     'DeleteAgenticMemoryByQueryTool': {
@@ -939,7 +929,7 @@ TOOL_REGISTRY = {
         'input_schema': DeleteAgenticMemoryByQueryArgs.model_json_schema(),
         'function': delete_agentic_memory_by_query_tool,
         'args_model': DeleteAgenticMemoryByQueryArgs,
-        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
         'http_methods': 'UPDATE',
     },
     'SearchAgenticMemoryTool': {
@@ -948,7 +938,7 @@ TOOL_REGISTRY = {
         'input_schema': SearchAgenticMemoryArgs.model_json_schema(),
         'function': search_agentic_memory_tool,
         'args_model': SearchAgenticMemoryArgs,
-        'min_version': '3.3.0',   # Agentic memory APIs requires OpenSearch 3.3+
+        'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
         'http_methods': 'UPDATE',
-    }
+    },
 }
