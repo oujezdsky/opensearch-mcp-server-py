@@ -5,6 +5,7 @@ import json
 import logging
 from semver import Version
 from tools.tool_params import *
+from tools.agentic_memory.params import *
 from tools.utils import helper_error
 from urllib.parse import quote
 
