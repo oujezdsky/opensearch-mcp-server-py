@@ -389,7 +389,7 @@ BASIC_CONFIG_PAYLOAD = {
         'embedding_model_id': 'embedding-model-123',
         'embedding_dimension': 1024,
         'llm_id': 'llm-model-456',
-        'strategies': [{'strategy_type': 'SEMANTIC', 'namespace': ['user_id']}],
+        'strategies': [{'type': 'SEMANTIC', 'namespace': ['user_id']}],
     },
 }
 BASIC_CONFIG_EXPECTED_BODY = {
@@ -403,7 +403,7 @@ BASIC_CONFIG_EXPECTED_BODY = {
         'use_system_index': True,
         'disable_history': False,
         'disable_session': True,
-        'strategies': [{'strategy_type': 'SEMANTIC', 'namespace': ['user_id'], 'enabled': True}],
+        'strategies': [{'type': 'SEMANTIC', 'namespace': ['user_id'], 'enabled': True}],
     },
 }
 
@@ -422,7 +422,7 @@ ADVANCED_CONFIG_PAYLOAD = {
         'max_infer_size': 50,
         'strategies': [
             {
-                'strategy_type': 'SEMANTIC',
+                'type': 'SEMANTIC',
                 'namespace': ['agent_id'],
                 'configuration': {
                     'llm_result_path': '$.output.message.content[0].text',
@@ -432,7 +432,7 @@ ADVANCED_CONFIG_PAYLOAD = {
                 'enabled': True,
             },
             {
-                'strategy_type': 'USER_PREFERENCE',
+                'type': 'USER_PREFERENCE',
                 'namespace': ['agent_id'],
                 'configuration': {'llm_result_path': '$.choices[0].message.content'},
             },
@@ -461,7 +461,7 @@ ADVANCED_CONFIG_EXPECTED_BODY = {
         'max_infer_size': 50,
         'strategies': [
             {
-                'strategy_type': 'SEMANTIC',
+                'type': 'SEMANTIC',
                 'namespace': ['agent_id'],
                 'configuration': {
                     'llm_result_path': '$.output.message.content[0].text',
@@ -471,7 +471,7 @@ ADVANCED_CONFIG_EXPECTED_BODY = {
                 'enabled': True,
             },
             {
-                'strategy_type': 'USER_PREFERENCE',
+                'type': 'USER_PREFERENCE',
                 'namespace': ['agent_id'],
                 'configuration': {'llm_result_path': '$.choices[0].message.content'},
                 'enabled': True,

@@ -313,7 +313,7 @@ async def create_agentic_memory_container(
     async with get_opensearch_client(args) as client:
         url = '/_plugins/_ml/memory_containers/_create'
 
-        body = args.model_dump(exclude_none=True, exclude={'opensearch_cluster_name'})
+        body = args.model_dump(exclude_none=True, exclude={'opensearch_cluster_name'}, by_alias=True)
 
         try:
             response = await client.transport.perform_request(method='POST', url=url, body=body)

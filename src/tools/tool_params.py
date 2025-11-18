@@ -527,6 +527,7 @@ class StrategyArgs(BaseModel):
 
     strategy_type: StrategyType = Field(
         ...,
+        alias="type",
         description='The strategy type. Valid values are SEMANTIC, USER_PREFERENCE, and SUMMARY.',
     )
     namespace: List[str] = Field(
