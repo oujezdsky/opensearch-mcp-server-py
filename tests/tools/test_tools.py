@@ -1930,7 +1930,7 @@ class TestTools:
             'CreateAgenticMemorySessionTool',
             'AddAgenticMemoriesTool',
             'GetAgenticMemoryTool',
-            'UpdateAgenticMemoryArgsTool',
+            'UpdateAgenticMemoryTool',
             'DeleteAgenticMemoryByIDTool',
             'DeleteAgenticMemoryByQueryTool',
             'SearchAgenticMemoryTool',

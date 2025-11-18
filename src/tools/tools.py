@@ -633,7 +633,7 @@ async def update_agentic_memory_tool(args: UpdateAgenticMemoryArgs) -> list[dict
         list[dict]: A confirmation message of the update operation in MCP format.
     """
     try:
-        await check_tool_compatibility('UpdateAgenticMemoryArgsTool', args)
+        await check_tool_compatibility('UpdateAgenticMemoryTool', args)
         result = await update_agentic_memory(args)
 
         memory_id = result.get('_id', args.id)
