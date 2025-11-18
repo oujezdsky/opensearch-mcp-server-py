@@ -919,8 +919,8 @@ TOOL_REGISTRY = {
         'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
         'http_methods': 'GET',
     },
-    'UpdateAgenticMemoryArgsTool': {
-        'display_name': 'UpdateAgenticMemoryArgsTool',
+    'UpdateAgenticMemoryTool': {
+        'display_name': 'UpdateAgenticMemoryTool',
         'description': 'Update a specific memory by its type and ID.',
         'input_schema': UpdateAgenticMemoryArgs.model_json_schema(),
         'function': update_agentic_memory_tool,
