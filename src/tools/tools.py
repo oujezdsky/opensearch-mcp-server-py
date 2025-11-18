@@ -516,6 +516,7 @@ async def create_agentic_memory_container_tool(
         list[dict]: A confirmation message with the new container ID in MCP format.
     """
     try:
+        await check_tool_compatibility('CreateAgenticMemoryContainerTool', args)
         result = await create_agentic_memory_container(args)
 
         container_id = result.get('memory_container_id')
@@ -552,6 +553,7 @@ async def create_agentic_memory_session_tool(
         list[dict]: A confirmation message with the new session ID in MCP format.
     """
     try:
+        await check_tool_compatibility('CreateAgenticMemorySessionTool', args)
         result = await create_agentic_memory_session(args)
 
         session_id = result.get('session_id')
@@ -578,7 +580,9 @@ async def add_agentic_memories_tool(args: AddAgenticMemoriesArgs) -> list[dict]:
         list[dict]: A confirmation message, often including the new working_memory_id or session_id, in MCP format.
     """
     try:
+        await check_tool_compatibility('AddAgenticMemoriesTool', args)
         result = await add_agentic_memories(args)
+
         session_id = result.get('session_id')
         memory_id = result.get('working_memory_id')
 
@@ -607,7 +611,9 @@ async def get_agentic_memory_tool(args: GetAgenticMemoryArgs) -> list[dict]:
         list[dict]: The retrieved memory object as a JSON string within a confirmation message, in MCP format.
     """
     try:
+        await check_tool_compatibility('GetAgenticMemoryTool', args)
         result = await get_agentic_memory(args)
+
         message = f'Successfully retrieved memory {args.id} ({args.memory_type.value}): {json.dumps(result)}'
         return [{'type': 'text', 'text': message}]
     except Exception as e:
@@ -627,7 +633,9 @@ async def update_agentic_memory_tool(args: UpdateAgenticMemoryArgs) -> list[dict
         list[dict]: A confirmation message of the update operation in MCP format.
     """
     try:
+        await check_tool_compatibility('UpdateAgenticMemoryArgsTool', args)
         result = await update_agentic_memory(args)
+
         memory_id = result.get('_id', args.id)
         message = f'Successfully updated memory {memory_id} ({args.memory_type.value}). Response: {json.dumps(result)}'
         return [{'type': 'text', 'text': message}]
@@ -650,7 +658,9 @@ async def delete_agentic_memoryby_ID_tool(
         list[dict]: A confirmation message of the deletion in MCP format.
     """
     try:
+        await check_tool_compatibility('DeleteAgenticMemoryByIDTool', args)
         result = await delete_agentic_memory_by_id(args)
+
         memory_id = result.get('_id', args.id)
         message = f'Successfully deleted memory {memory_id} ({args.memory_type.value}). Response: {json.dumps(result)}'
         return [{'type': 'text', 'text': message}]
@@ -673,7 +683,9 @@ async def delete_agentic_memory_by_query_tool(
         list[dict]: A summary of the delete-by-query operation, including counts, in MCP format.
     """
     try:
+        await check_tool_compatibility('DeleteAgenticMemoryByQueryTool', args)
         result = await delete_agentic_memory_by_query(args)
+
         deleted_count = result.get('deleted', 0)
         failures = result.get('failures', [])
 
@@ -711,7 +723,9 @@ async def search_agentic_memory_tool(args: SearchAgenticMemoryArgs) -> list[dict
         list[dict]: The search results from OpenSearch as a JSON string within a summary message, in MCP format.
     """
     try:
+        await check_tool_compatibility('SearchAgenticMemoryTool', args)
         result = await search_agentic_memory(args)
+
         hits = result.get('hits', {}).get('hits', [])
         count = len(hits)
         total = result.get('hits', {}).get('total', {}).get('value', count)
