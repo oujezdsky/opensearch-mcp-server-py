@@ -60,6 +60,14 @@ The following tools are available but disabled by default. To enable them, see t
 - [GetNodesHotThreadsTool](https://docs.opensearch.org/docs/latest/api-reference/nodes-apis/nodes-hot-threads/): Gets information about hot threads in the cluster nodes from the /\_nodes/hot_threads endpoint.
 - [GetAllocationTool](https://docs.opensearch.org/docs/latest/api-reference/cat/cat-allocation/): Gets information about shard allocation across nodes in the cluster from the /\_cat/allocation endpoint.
 - [GetLongRunningTasksTool](https://docs.opensearch.org/docs/latest/api-reference/cat/cat-tasks/): Gets information about long-running tasks in the cluster, sorted by running time in descending order.
+- [CreateAgenticMemoryContainerTool](https://docs.opensearch.org/latest/ml-commons-plugin/api/agentic-memory-apis/create-memory-container/): Creates a memory container configuration for storing agentic memories.
+- [CreateAgenticMemorySessionTool](https://docs.opensearch.org/latest/ml-commons-plugin/api/agentic-memory-apis/create-session/): Creates a new session within a memory container.
+- [AddAgenticMemoriesTool](https://docs.opensearch.org/latest/ml-commons-plugin/api/agentic-memory-apis/add-memory/): Adds conversational or structured data memories to a container.
+- [GetAgenticMemoryTool](https://docs.opensearch.org/latest/ml-commons-plugin/api/agentic-memory-apis/get-memory/): Retrieves a specific memory by its ID and type.
+- [SearchAgenticMemoryTool](https://docs.opensearch.org/latest/ml-commons-plugin/api/agentic-memory-apis/search-memory/): Searches for memories using OpenSearch Query DSL.
+- [UpdateAgenticMemoryTool](https://docs.opensearch.org/latest/ml-commons-plugin/api/agentic-memory-apis/update-memory/): Updates an existing memory (supports specific fields based on memory type).
+- [DeleteAgenticMemoryByIDTool](https://docs.opensearch.org/latest/ml-commons-plugin/api/agentic-memory-apis/delete-memory/): Deletes a specific memory by its ID.
+- [DeleteAgenticMemoryByQueryTool](https://docs.opensearch.org/latest/ml-commons-plugin/api/agentic-memory-apis/delete-memory/): Deletes multiple memories matching a query criteria.
 
 ### Tool Parameters
 
@@ -154,6 +162,77 @@ The following tools are available but disabled by default. To enable them, see t
 - **GetLongRunningTasksTool**
   - `opensearch_url` (optional): The OpenSearch cluster URL to connect to
   - `limit` (optional): The maximum number of tasks to return. Default is 10.
+
+- **CreateAgenticMemoryContainerTool**
+
+  - `name` (required): The name of the memory container. *(Body Parameter)*
+  - `description` (optional): The description of the memory container. *(Body Parameter)*
+  - `configuration` (required): The memory container configuration. See [The configuration object](https://docs.opensearch.org/latest/ml-commons-plugin/api/agentic-memory-apis/create-memory-container/#the-configuration-object). *(Body Parameter)*
+
+- **CreateAgenticMemorySessionTool**
+
+  - `memory_container_id` (required): The ID of the memory container where the session will be created. *(Path Parameter)*
+  - `session_id` (optional): A custom session ID. If not provided, a random ID is generated. *(Body Parameter)*
+  - `summary` (optional): A session summary or description. *(Body Parameter)*
+  - `metadata` (optional): Additional metadata for the session provided as key-value pairs. *(Body Parameter)*
+  - `namespace` (optional): Namespace information for organizing the session. *(Body Parameter)*
+
+- **AddAgenticMemoriesTool**
+
+  - `memory_container_id` (required): The ID of the memory container to add the memory to. *(Path Parameter)*
+  - `messages` (conditional): A list of messages. Required when `payload_type` is `conversational`. *(Body Parameter)*
+  - `structured_data` (conditional): Structured data content. Required when `payload_type` is `data`. *(Body Parameter)*
+  - `binary_data` (optional): 	Binary data content encoded as a Base64 string for binary payloads. *(Body Parameter)*
+  - `payload_type` (required): The type of payload. Valid values are `conversational` or `data`. See [See Payload types](https://docs.opensearch.org/latest/ml-commons-plugin/agentic-memory/#payload-types). *(Body Parameter)*
+  - `namespace` (optional): The [namespace](https://docs.opensearch.org/latest/ml-commons-plugin/agentic-memory/#namespaces) context for organizing memories (for example, `user_id`, `session_id`, or `agent_id`). If `session_id` is not specified in the namespace field and `disable_session`: `false` (default is `true`), a new session with a new session ID is created. *(Body Parameter)*
+  - `metadata` (optional): Additional metadata for the memory (for example, `status`, `branch`, or custom fields). *(Body Parameter)*
+  - `tags` (optional): Tags for categorizing memories. *(Body Parameter)*
+  - `infer` (optional): Whether to use an LLM to extract key information (default: `false`). When `true`, the LLM extracts key information from the original text and stores it as a memory. [See Inference mode](https://docs.opensearch.org/latest/ml-commons-plugin/agentic-memory/#inference-mode). *(Body Parameter)*
+
+- **GetAgenticMemoryTool**
+
+  - `memory_container_id` (required): The ID of the memory container from which to retrieve the memory. *(Path Parameter)*
+  - `type` (required): The memory type. Valid values are `sessions`, `working`, `long-term`, and `history`. *(Path Parameter)*
+  - `id` (required): The ID of the memory to retrieve. *(Path Parameter)*
+
+- **SearchAgenticMemoryTool**
+
+  - `memory_container_id` (required): The ID of the memory container. *(Path Parameter)*
+  - `type` (required): The memory type. Valid values are `sessions`, `working`, `long-term`, and `history`. *(Path Parameter)*
+  - `query` (required): The search query using OpenSearch [query DSL](https://docs.opensearch.org/latest/query-dsl/). *(Body Parameter)*
+  - `sort` (optional): Sort specification for the search results. *(Body Parameter)*
+
+- **UpdateAgenticMemoryTool**
+
+  - `memory_container_id` (required): The ID of the memory container. *(Path Parameter)*
+  - `type` (required): The memory type (`sessions`, `working`, or `long-term`).*(Path Parameter)*
+  - `id` (required): The ID of the memory to update.*(Path Parameter)*
+  - **Session memory request fields:**
+    - `summary` (optional): The summary of the session. *(Body Parameter)*
+    - `metadata` (optional): Additional metadata for the memory (for example, `status`, `branch`, or custom fields). *(Body Parameter)*
+    - `agents` (optional): Additional information about the agents. *(Body Parameter)*
+    - `additional_info` (optional): Additional metadata to associate with the session. *(Body Parameter)*
+  - **Working memory request fields**
+    - `messages` (optional): Updated conversation messages (for conversation type). *(Body Parameter)*
+    - `structured_data` (optional): Updated structured data content (for data memory payloads). *(Body Parameter)*
+    - `binary_data` (optional): Updated binary data content (for data memory payloads). *(Body Parameter)*
+    - `tags` (optional): Updated tags for categorization. *(Body Parameter)*
+    - `metadata` (optional): Additional metadata for the memory (for example, `status`, `branch`, or custom fields). *(Body Parameter)*
+  - **Long-term memory request fields**
+    - `memory` (optional): The updated memory content. *(Body Parameter)*
+    - `tags` (optional): Updated tags for categorization. *(Body Parameter)*
+
+- **DeleteAgenticMemoryByIDTool**
+
+  - `memory_container_id` (required): The ID of the memory container from which to delete the memory. *(Path Parameter)*
+  - `type` (required): The type of memory to delete. Valid values are `sessions`, `working`, `long-term`, and `history`. *(Path Parameter)*
+  - `id` (required): The ID of the specific memory to delete. *(Path Parameter)*
+
+- **DeleteAgenticMemoryByQueryTool**
+
+  - `memory_container_id` (required): The ID of the memory container from which to delete the memory. *(Path Parameter)*
+  - `type` (required): The type of memory to delete. Valid values are `sessions`, `working`, `long-term`, and `history`. *(Path Parameter)*
+  - `query` (required): The OpenSearch [DSL query](https://docs.opensearch.org/latest/query-dsl/) to match memories for deletion. *(Body Parameter)*
 
 > More tools coming soon. [Click here](DEVELOPER_GUIDE.md#contributing)
 

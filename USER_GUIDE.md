@@ -11,6 +11,7 @@
 - [Running the Server](#running-the-server)
 - [Tool Filter](#tool-filter)
 - [Tool Customization](#tool-customization)
+- [Agentic Memory Usage](#agentic-memory-usage)
 - [LangChain Integration](#langchain-integration)
 
 ## Overview
@@ -604,6 +605,141 @@ Configuration file settings have higher priority than runtime parameters. If bot
 - Only existing tools can be customized; new tools cannot be created
 - Changes take effect immediately when the server starts
 - Invalid tool names or properties will throw an error
+
+## Agentic Memory Usage
+
+The Agentic Memory tools allow you to maintain state and long-term memory for AI agents using OpenSearch.
+**Note:** These tools require OpenSearch version **3.3.0 or later**.
+
+The typical workflow involves creating a container, establishing a session, and then reading/writing memories.
+
+### 1. Create a Memory Container
+First, you need a container to define how memories are stored and processed (e.g., which embedding models and strategies to use).
+
+**Tool:** `CreateAgenticMemoryContainerTool`
+```json
+{
+  "name": "vacation-planner-memory",
+  "description": "Storage for travelers' preferences and trip history",
+  "configuration": {
+    "embedding_model_type": "TEXT_EMBEDDING",
+    "embedding_model_id": "your-embedding-model-id",
+    "embedding_dimension": 1024,
+    "llm_id": "your-llm-model-id",
+    "strategies": [
+      {
+        "type": "USER_PREFERENCE",
+        "namespace": ["traveler_id"]
+      },
+      {
+        "type": "SEMANTIC",
+        "namespace": ["traveler_id"]
+      }
+    ]
+  }
+}
+```
+
+### 2. Create a Session
+Start a new planning session for a summer trip.
+
+**Tool:** `CreateAgenticMemorySessionTool`
+```json
+{
+  "memory_container_id": "<container_id_from_step_1>",
+  "session_id": "summer-trip-2025",
+  "namespace": {
+    "traveler_id": "adventurous_alice"
+  },
+  "metadata": {
+    "vibe": "relaxing but fun",
+    "budget": "medium"
+  }
+}
+```
+
+### 3. Add Memories
+Store the initial context. Alice shares her first ideas for the trip - quiet museum days and culinary experiences. The agent stores these conversational messages and runs inference (due to `infer: true`) to extract facts and preferences for future recommendations.
+
+**Tool:** `AddAgenticMemoriesTool`
+```json
+{
+  "memory_container_id": "<container_id>",
+  "payload_type": "conversational",
+  "namespace": {
+    "traveler_id": "adventurous_alice",
+    "session_id": "summer-trip-2025"
+  },
+  "messages": [
+    {
+      "role": "user",
+      "content": [{"type": "text", "text": "I'm thinking about Italy! I absolutely love gelato. I was also thinking about spending my days walking through quiet museums and art galleries."}]
+    },
+    {
+      "role": "assistant",
+      "content": [{"type": "text", "text": "Sounds lovely! Florence would be perfect for art galleries and authentic gelato."}]
+    }
+  ],
+  "infer": true
+}
+```
+
+### 4. Search Memories
+Later, the agent needs to make a restaurant recommendation. It searches the working memory to retrieve Alice's specific food preferences (like her love for gelato) to ensure the suggestion matches her taste.
+
+**Tool:** `SearchAgenticMemoryTool`
+```json
+{
+  "memory_container_id": "<container_id>",
+  "type": "working",
+  "query": {
+    "match": {
+      "text": "food preferences"
+    }
+  },
+  "sort": [
+    {
+      "created_time": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+```
+
+### 5. Update & Delete
+Alice changes her mind.
+
+1. We update the session summary to reflect the new goal (clubs and grappa).
+
+2. We delete memories related to "museums". Since Alice decided to ditch the cultural tour for partying, removing the old "museum" context ensures the agent won't mix up the vibe and suggest art exhibitions when she wants bars.
+
+**Tool:** `UpdateAgenticMemoryTool`
+```json
+{
+  "memory_container_id": "<container_id>",
+  "type": "sessions",
+  "id": "<session_id>",
+  "summary": "Planning a trip to Italy focused on nightlife, clubs, and drinking grappa, while retaining the interest in gelato.",
+  "metadata": {
+    "vibe": "nightlife & party",
+    "budget": "medium"
+  }
+}
+```
+
+**Tool:** `DeleteAgenticMemoryByQueryTool`
+```json
+{
+  "memory_container_id": "<container_id>",
+  "type": "working",
+  "query": {
+    "match": {
+      "text": "museums art galleries"
+    }
+  }
+}
+```
 
 ## LangChain Integration
 
