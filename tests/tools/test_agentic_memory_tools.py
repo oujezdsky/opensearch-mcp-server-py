@@ -709,7 +709,7 @@ class TestAgenticMemoryTools:
         ctx = errors[0].get('ctx')
         assert ctx is not None
         assert ctx['field_name'] == 'messages'
-        assert ctx['memory_type'] == 'session'
+        assert ctx['memory_type'] == MemoryType.sessions.value
 
     @pytest.mark.asyncio
     async def test_update_agentic_memory_validation_error_working_with_session_fields(
@@ -732,7 +732,7 @@ class TestAgenticMemoryTools:
         ctx = errors[0].get('ctx')
         assert ctx is not None
         assert ctx['field_name'] == 'summary'
-        assert ctx['memory_type'] == 'working'
+        assert ctx['memory_type'] == MemoryType.working.value
 
     @pytest.mark.asyncio
     async def test_update_agentic_memory_validation_error_long_term_with_working_fields(
@@ -755,7 +755,7 @@ class TestAgenticMemoryTools:
         ctx = errors[0].get('ctx')
         assert ctx is not None
         assert ctx['field_name'] == 'structured_data'
-        assert ctx['memory_type'] == 'long-term'
+        assert ctx['memory_type'] == MemoryType.long_term.value
 
     @pytest.mark.asyncio
     async def test_update_agentic_memory_validation_error_working_no_fields(self):

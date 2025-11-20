@@ -156,13 +156,13 @@ class UpdateAgenticMemoryArgs(BaseAgenticMemoryContainerArgs):
             disallowed_fields = self._WORKING_ONLY_FIELDS | self._LONG_TERM_ONLY_FIELDS
             for field in disallowed_fields:
                 if field in set_fields:
-                    _raise_not_allowed_error(field, 'session')
+                    _raise_not_allowed_error(field, MemoryType.sessions)
 
         elif self.memory_type == MemoryType.working:
             disallowed_fields = self._SESSION_ONLY_FIELDS | self._LONG_TERM_ONLY_FIELDS
             for field in disallowed_fields:
                 if field in set_fields:
-                    _raise_not_allowed_error(field, 'working')
+                    _raise_not_allowed_error(field, MemoryType.working)
 
             if not any(field in set_fields for field in self._UPDATABLE_WORKING_FIELDS):
                 raise PydanticCustomError(
@@ -175,7 +175,7 @@ class UpdateAgenticMemoryArgs(BaseAgenticMemoryContainerArgs):
             disallowed_fields = self._SESSION_ONLY_FIELDS | self._WORKING_ONLY_FIELDS
             for field in disallowed_fields:
                 if field in set_fields:
-                    _raise_not_allowed_error(field, 'long-term')
+                    _raise_not_allowed_error(field, MemoryType.long_term)
 
             if not any(field in set_fields for field in self._UPDATABLE_LONG_TERM_FIELDS):
                 raise PydanticCustomError(
@@ -351,7 +351,10 @@ class AgenticMemoryConfigurationArgs(BaseModel):
     @model_validator(mode='after')
     def validate_embedding_configuration(self) -> 'AgenticMemoryConfigurationArgs':
         """Validate embedding model configuration."""
-        if self.embedding_model_type == 'TEXT_EMBEDDING' and self.embedding_dimension is None:
+        if (
+            self.embedding_model_type == EmbeddingModelType.text_embedding
+            and self.embedding_dimension is None
+        ):
             raise PydanticCustomError(
                 ERR_EMBEDDING_DIMENSION_REQUIRED,
                 'embedding_dimension is required when embedding_model_type is TEXT_EMBEDDING',
