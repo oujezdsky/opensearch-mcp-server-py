@@ -641,7 +641,7 @@ TOOL_REGISTRY = {
         'function': create_agentic_memory_session_tool,
         'args_model': CreateAgenticMemorySessionArgs,
         'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
-        'http_methods': 'UPDATE',
+        'http_methods': 'POST',
     },
     'AddAgenticMemoriesTool': {
         'display_name': 'AddAgenticMemoriesTool',
@@ -650,7 +650,7 @@ TOOL_REGISTRY = {
         'function': add_agentic_memories_tool,
         'args_model': AddAgenticMemoriesArgs,
         'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
-        'http_methods': 'UPDATE',
+        'http_methods': 'POST',
     },
     'GetAgenticMemoryTool': {
         'display_name': 'GetAgenticMemoryTool',
@@ -668,7 +668,7 @@ TOOL_REGISTRY = {
         'function': update_agentic_memory_tool,
         'args_model': UpdateAgenticMemoryArgs,
         'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
-        'http_methods': 'UPDATE',
+        'http_methods': 'PUT',
     },
     'DeleteAgenticMemoryByIDTool': {
         'display_name': 'DeleteAgenticMemoryByIDTool',
@@ -677,7 +677,7 @@ TOOL_REGISTRY = {
         'function': delete_agentic_memoryby_ID_tool,
         'args_model': DeleteAgenticMemoryByIDArgs,
         'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
-        'http_methods': 'UPDATE',
+        'http_methods': 'DELETE',
     },
     'DeleteAgenticMemoryByQueryTool': {
         'display_name': 'DeleteAgenticMemoryByQueryTool',
@@ -686,7 +686,7 @@ TOOL_REGISTRY = {
         'function': delete_agentic_memory_by_query_tool,
         'args_model': DeleteAgenticMemoryByQueryArgs,
         'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
-        'http_methods': 'UPDATE',
+        'http_methods': 'POST',
     },
     'SearchAgenticMemoryTool': {
         'display_name': 'SearchAgenticMemoryTool',
@@ -695,6 +695,6 @@ TOOL_REGISTRY = {
         'function': search_agentic_memory_tool,
         'args_model': SearchAgenticMemoryArgs,
         'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
-        'http_methods': 'UPDATE',
+        'http_methods': 'GET',
     },
 }
