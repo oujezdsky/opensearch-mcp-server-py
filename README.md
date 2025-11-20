@@ -183,11 +183,11 @@ The following tools are available but disabled by default. To enable them, see t
   - `messages` (conditional): A list of messages. Required when `payload_type` is `conversational`. *(Body Parameter)*
   - `structured_data` (conditional): Structured data content. Required when `payload_type` is `data`. *(Body Parameter)*
   - `binary_data` (optional): 	Binary data content encoded as a Base64 string for binary payloads. *(Body Parameter)*
-  - `payload_type` (required): The type of payload. Valid values are `conversational` or `data`. See [See Payload types](https://docs.opensearch.org/latest/ml-commons-plugin/agentic-memory/#payload-types). *(Body Parameter)*
+  - `payload_type` (required): The type of payload. Valid values are `conversational` or `data`. See [Payload types](https://docs.opensearch.org/latest/ml-commons-plugin/agentic-memory/#payload-types). *(Body Parameter)*
   - `namespace` (optional): The [namespace](https://docs.opensearch.org/latest/ml-commons-plugin/agentic-memory/#namespaces) context for organizing memories (for example, `user_id`, `session_id`, or `agent_id`). If `session_id` is not specified in the namespace field and `disable_session`: `false` (default is `true`), a new session with a new session ID is created. *(Body Parameter)*
   - `metadata` (optional): Additional metadata for the memory (for example, `status`, `branch`, or custom fields). *(Body Parameter)*
   - `tags` (optional): Tags for categorizing memories. *(Body Parameter)*
-  - `infer` (optional): Whether to use an LLM to extract key information (default: `false`). When `true`, the LLM extracts key information from the original text and stores it as a memory. [See Inference mode](https://docs.opensearch.org/latest/ml-commons-plugin/agentic-memory/#inference-mode). *(Body Parameter)*
+  - `infer` (optional): Whether to use an LLM to extract key information (default: `false`). When `true`, the LLM extracts key information from the original text and stores it as a memory. See [Inference mode](https://docs.opensearch.org/latest/ml-commons-plugin/agentic-memory/#inference-mode). *(Body Parameter)*
 
 - **GetAgenticMemoryTool**
 

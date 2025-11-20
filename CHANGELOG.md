@@ -8,7 +8,7 @@ Inspired from [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Fixed
 - Fix AWS auth issues for cat based tools, pin OpenSearchPy to 2.18.0 ([#135](https://github.com/opensearch-project/opensearch-mcp-server-py/pull/135))
-- Add new toolset for the OpenSearch Agentic Memory API: `CreateAgenticMemoryContainerTool`, `CreateAgenticMemorySessionTool`, `AddAgenticMemoriesTool`, `GetAgenticMemoryTool`, `UpdateAgenticMemoryTool`, `DeleteAgenticMemoryByIDTool`, `DeleteAgenticMemoryByQueryTool`, and `SearchAgenticMemoryTool`. ([#113](https://github.com/opensearch-project/opensearch-mcp-server-py/pull/138))
+- Add new toolset for the OpenSearch Agentic Memory API: `CreateAgenticMemoryContainerTool`, `CreateAgenticMemorySessionTool`, `AddAgenticMemoriesTool`, `GetAgenticMemoryTool`, `UpdateAgenticMemoryTool`, `DeleteAgenticMemoryByIDTool`, `DeleteAgenticMemoryByQueryTool`, and `SearchAgenticMemoryTool`. ([#138](https://github.com/opensearch-project/opensearch-mcp-server-py/pull/138))
 ### Removed
 
 ## [Released 0.5.1]
