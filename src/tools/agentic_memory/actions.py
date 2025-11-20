@@ -40,12 +40,11 @@ async def create_agentic_memory_container_tool(
         result = await create_agentic_memory_container(args)
 
         container_id = result.get('memory_container_id')
-        if container_id:
-            message = f'Successfully created memory container. ID: {container_id}. Response: {json.dumps(result)}'
-        else:
-            message = (
-                f'Memory container created, but no ID was returned. Response: {json.dumps(result)}'
-            )
+        message = (
+            f'Successfully created memory container. ID: {container_id}. Response: {json.dumps(result)}'
+            if container_id
+            else f'Memory container created, but no ID was returned. Response: {json.dumps(result)}'
+        )
 
         return [{'type': 'text', 'text': message}]
 
@@ -221,16 +220,13 @@ async def delete_agentic_memory_by_query_tool(
         deleted_count = result.get('deleted', 0)
         failures = result.get('failures', [])
 
-        if failures:
-            message = (
-                f'Delete by query for {args.memory_type.value} completed with {len(failures)} failures. '
-                f'Deleted: {deleted_count}. Response: {json.dumps(result)}'
-            )
-        else:
-            message = (
-                f'Successfully deleted memories by query for {args.memory_type.value}. '
-                f'Deleted: {deleted_count}. Response: {json.dumps(result)}'
-            )
+        message = (
+            f'Delete by query for {args.memory_type.value} completed with {len(failures)} failures. '
+            f'Deleted: {deleted_count}. Response: {json.dumps(result)}'
+            if failures
+            else f'Successfully deleted memories by query for {args.memory_type.value}. '
+            f'Deleted: {deleted_count}. Response: {json.dumps(result)}'
+        )
 
         return [{'type': 'text', 'text': message}]
     except Exception as e:
@@ -264,13 +260,12 @@ async def search_agentic_memory_tool(args: SearchAgenticMemoryArgs) -> list[dict
         count = len(hits)
         total = result.get('hits', {}).get('total', {}).get('value', count)
 
-        if total == 0:
-            message = f'Search results for {args.memory_type.value}: No memories found. Response: {json.dumps(result)}'
-        else:
-            message = (
-                f'Search results for {args.memory_type.value}: Found {total} memories, returning {count}. '
-                f'Response: {json.dumps(result)}'
-            )
+        message = (
+            f'Search results for {args.memory_type.value}: No memories found. Response: {json.dumps(result)}'
+            if total == 0
+            else f'Search results for {args.memory_type.value}: Found {total} memories, returning {count}. '
+            f'Response: {json.dumps(result)}'
+        )
 
         return [{'type': 'text', 'text': message}]
     except Exception as e:
