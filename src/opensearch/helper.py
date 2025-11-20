@@ -314,41 +314,14 @@ async def create_agentic_memory_container(
     async with get_opensearch_client(args) as client:
         url = '/_plugins/_ml/memory_containers/_create'
 
-        body = args.model_dump(exclude_none=True, exclude={'opensearch_cluster_name'}, by_alias=True)
+        body = args.model_dump(
+            exclude_none=True, exclude={'opensearch_cluster_name'}, by_alias=True
+        )
 
         try:
             response = await client.transport.perform_request(method='POST', url=url, body=body)
         except Exception as e:
             raise helper_error('create agentic memory container', e)
-
-        return response
-
-
-async def get_agentic_memory(args: GetAgenticMemoryArgs) -> Dict[str, Any]:
-    """Retrieve a specific agentic memory by its type and ID from the memory container.
-
-    Args:
-        args: GetAgenticMemoryArgs containing memory_container_id, memory_type, and id
-
-    Returns:
-        json: The retrieved memory information from the /_memory endpoint
-    """
-    from .client import get_opensearch_client
-
-    async with get_opensearch_client(args) as client:
-        url_parts = [
-            '/_plugins/_ml/memory_containers',
-            quote(args.memory_container_id, safe=''),
-            'memories',
-            quote(args.memory_type, safe=''),
-            quote(args.id, safe=''),
-        ]
-        url = '/'.join(url_parts)
-
-        try:
-            response = await client.transport.perform_request(method='GET', url=url)
-        except Exception as e:
-            raise helper_error('get agentic memory', e)
 
         return response
 
@@ -416,6 +389,35 @@ async def add_agentic_memories(args: AddAgenticMemoriesArgs) -> Dict[str, Any]:
             response = await client.transport.perform_request(method='POST', url=url, body=body)
         except Exception as e:
             raise helper_error('add agentic memories', e)
+
+        return response
+
+
+async def get_agentic_memory(args: GetAgenticMemoryArgs) -> Dict[str, Any]:
+    """Retrieve a specific agentic memory by its type and ID from the memory container.
+
+    Args:
+        args: GetAgenticMemoryArgs containing memory_container_id, memory_type, and id
+
+    Returns:
+        json: The retrieved memory information from the /_memory endpoint
+    """
+    from .client import get_opensearch_client
+
+    async with get_opensearch_client(args) as client:
+        url_parts = [
+            '/_plugins/_ml/memory_containers',
+            quote(args.memory_container_id, safe=''),
+            'memories',
+            quote(args.memory_type, safe=''),
+            quote(args.id, safe=''),
+        ]
+        url = '/'.join(url_parts)
+
+        try:
+            response = await client.transport.perform_request(method='GET', url=url)
+        except Exception as e:
+            raise helper_error('get agentic memory', e)
 
         return response
 
