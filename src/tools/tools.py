@@ -674,7 +674,7 @@ TOOL_REGISTRY = {
         'display_name': 'DeleteAgenticMemoryByIDTool',
         'description': 'Deletes specific agentic memory container by its type and ID.',
         'input_schema': DeleteAgenticMemoryByIDArgs.model_json_schema(),
-        'function': delete_agentic_memoryby_ID_tool,
+        'function': delete_agentic_memory_by_id_tool,
         'args_model': DeleteAgenticMemoryByIDArgs,
         'min_version': '3.3.0',  # Agentic memory APIs requires OpenSearch 3.3+
         'http_methods': 'DELETE',

@@ -62,7 +62,7 @@ class TestAgenticMemoryTools:
             create_agentic_memory_container_tool,
             create_agentic_memory_session_tool,
             delete_agentic_memory_by_query_tool,
-            delete_agentic_memoryby_ID_tool,
+            delete_agentic_memory_by_id_tool,
             get_agentic_memory_tool,
             search_agentic_memory_tool,
             update_agentic_memory_tool,
@@ -95,7 +95,7 @@ class TestAgenticMemoryTools:
         self._add_agentic_memories_tool = add_agentic_memories_tool
         self._get_agentic_memory_tool = get_agentic_memory_tool
         self._update_agentic_memory_tool = update_agentic_memory_tool
-        self._delete_agentic_memoryby_ID_tool = delete_agentic_memoryby_ID_tool
+        self._delete_agentic_memory_by_id_tool = delete_agentic_memory_by_id_tool
         self._delete_agentic_memory_by_query_tool = delete_agentic_memory_by_query_tool
         self._search_agentic_memory_tool = search_agentic_memory_tool
 
@@ -510,7 +510,7 @@ class TestAgenticMemoryTools:
             type=memory_type,
             id=memory_id,
         )
-        result = await self._delete_agentic_memoryby_ID_tool(args)
+        result = await self._delete_agentic_memory_by_id_tool(args)
 
         # Assert
         assert len(result) == 1
@@ -542,7 +542,7 @@ class TestAgenticMemoryTools:
             type=memory_type,
             id=memory_id,
         )
-        result = await self._delete_agentic_memoryby_ID_tool(args)
+        result = await self._delete_agentic_memory_by_id_tool(args)
 
         # Assert
         assert len(result) == 1

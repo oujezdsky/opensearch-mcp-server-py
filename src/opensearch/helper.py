@@ -359,7 +359,7 @@ async def create_agentic_memory_session(
     """Create a new agentic memory session in the specified memory container.
 
     Args:
-        args: CreateSessionArgs containing memory_container_id and optional session_id, summary, metadata, namespace
+        args: CreateAgenticMemorySessionArgs containing memory_container_id and optional session_id, summary, metadata, namespace
 
     Returns:
         json: Response from the session creation endpoint

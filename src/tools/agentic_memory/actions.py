@@ -174,7 +174,7 @@ async def update_agentic_memory_tool(args: UpdateAgenticMemoryArgs) -> list[dict
         return [{'type': 'text', 'text': f'Error updating memory: {str(error_to_report)}'}]
 
 
-async def delete_agentic_memoryby_ID_tool(
+async def delete_agentic_memory_by_id_tool(
     args: DeleteAgenticMemoryByIDArgs,
 ) -> list[dict]:
     """Tool to delete a specific agentic memory by its type and ID.
@@ -286,7 +286,7 @@ __all__ = [
     'add_agentic_memories_tool',
     'get_agentic_memory_tool',
     'update_agentic_memory_tool',
-    'delete_agentic_memoryby_ID_tool',
+    'delete_agentic_memory_by_id_tool',
     'delete_agentic_memory_by_query_tool',
     'search_agentic_memory_tool',
 ]
