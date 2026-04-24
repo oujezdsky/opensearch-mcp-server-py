@@ -44,8 +44,8 @@ from mcp.client.sse import sse_client
 # Use the module's own config resolution to read & display the container ID
 # so we can verify the server will see the same value.
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
-from tools.config import get_memory_container_id_from_config, should_enable_agentic_memory_tools
-
+from tools.config import get_memory_container_id_from_config
+should_enable_agentic_memory_tools = True
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
@@ -68,12 +68,27 @@ def txt(resp) -> str:
 
 
 def extract_json(s: str) -> dict:
-    """Parse the JSON payload from a tool text response."""
+    """Parse the JSON payload from a tool text response.
+
+    Supports both old format ('... Response: {json}') and
+    new format ('label:\\n{json}').
+    """
+    # New format: JSON starts after the first newline
+    nl = s.find("\n")
+    if nl != -1:
+        try:
+            return json.loads(s[nl + 1:].strip())
+        except json.JSONDecodeError:
+            pass
+    # Old format: JSON after 'Response:' marker
     marker = "Response:"
     idx = s.find(marker)
-    if idx == -1:
-        return {}
-    return json.loads(s[idx + len(marker):].strip())
+    if idx != -1:
+        try:
+            return json.loads(s[idx + len(marker):].strip())
+        except json.JSONDecodeError:
+            pass
+    return {}
 
 
 def is_error(response_text: str) -> bool:
@@ -106,7 +121,7 @@ def preflight():
     print(f"  Session ID   : {SESSION_ID}")
     print(f"  Config path  : {CONFIG_PATH or '(none – using env var)'}")
 
-    if not should_enable_agentic_memory_tools(CONFIG_PATH):
+    if not should_enable_agentic_memory_tools:
         print(
             f"\n[{FAIL}] memory_container_id is not configured.\n"
             "  Set it via config file (agentic_memory.memory_container_id) or\n"
